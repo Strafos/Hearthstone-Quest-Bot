@@ -9,6 +9,7 @@ import io
 
 from board_state import DATA
 
+
 class GameReader:
 
     def __init__(self):
@@ -52,10 +53,13 @@ class GameReader:
         for hand_card in self.game.in_zone(3):
             card_id = hand_card.card_id
             if card_id:
+                safe = hand_card
                 ID_card = self.get_card_name(card_id)
                 hand.append((ID_card['name'], hand_card.tags[GameTag.ZONE_POSITION], ID_card['cost'], card_id))
         hand.sort(key=lambda x: x[2])
-
+        for i in dir(safe):
+            print(i)
+        print(hand_card.controller)
         return hand
     
     def get_current_player(self):
@@ -94,7 +98,7 @@ class GameReader:
 
 gr = GameReader()
 hand, turn, board, game_step, mana = gr.get_current_state()
-print(hand)
-print(turn)
-print(board)
-print(mana)
+# print(hand)
+# print(turn)
+# print(board)
+# print(mana)

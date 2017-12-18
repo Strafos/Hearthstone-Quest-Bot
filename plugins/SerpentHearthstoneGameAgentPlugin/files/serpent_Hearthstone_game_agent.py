@@ -39,7 +39,7 @@ class GameReader:
             json_str = json_file.read()
         return json.loads(json_str)
 
-    def get_card_name(self, card_id):
+    def get_card_info(self, card_id):
         for card in self.card_data:
             if card['id'] == card_id:
                 return card
@@ -50,17 +50,26 @@ class GameReader:
     def get_game_step(self):
         return self.game.tags[GameTag.STEP]
 
+    # Return Hand of BaseCard objects sorted by increasing cost
     def get_current_hand(self):
-        # Hand: (Name, Hand Position, Cost, Card_ID)
-        # When returned, Hand sorts by cost
         hand = []
-        for hand_card in self.game.in_zone(3):
-            card_id = hand_card.card_id
-            if card_id:
-                ID_card = self.get_card_name(card_id)
-                hand.append((ID_card['name'], hand_card.tags[GameTag.ZONE_POSITION], ID_card['cost'], card_id))
-        hand.sort(key=lambda x: x[2])
-
+        for card_in_hand in self.game.in_zone(3):
+            id = card_in_hand.card_id
+            if id:
+                card_info = self.get_card_info(id)
+                card_type = ID_card['type']
+                if card_type == "MINION":
+                    try:
+                        mechanics = card_info['mechanics']
+                    except:
+                        mechanics = None
+                    card = MinionCard(card_info['name'], id, card_info['cost'], card_info['attack'], card_info['health'], mechanics)
+                elif card_type == "SPELL":
+                    card = SpellCard(card_info['name'], id, card_info['cost'])
+                elif card_type == "WEAPON":
+                    card = WeaponCard(card['name'], id, card_info['cost'], card_info['attack'], card_info['durability'])
+                hand.append(card)
+        hand.sort(key=lambda x: x.cost)
         return hand
     
     def get_current_player(self):
@@ -82,7 +91,7 @@ class GameReader:
                 continue
             id = board_card.card_id
             if id and "HERO" not in id:
-                ID_card = self.get_card_name(id)
+                ID_card = self.get_card_info(id)
                 if ID_card and ID_card['type'] != "HERO_POWER":
                     board.append((ID_card['name'], board_card.tags[GameTag.ZONE_POSITION], board_card.controller.name, board_card.tags[GameTag.TAUNT]))
         return board
@@ -118,7 +127,7 @@ class HearthstoneAI:
             pass
             
 
-# Preforms all actions
+# Preforms in-game actions using input controller
 class SerpentHearthstoneGameAgent(GameAgent):
     X_RES = 840
     Y_RES = 473
@@ -257,8 +266,6 @@ class SerpentHearthstoneGameAgent(GameAgent):
                 self.play_card(mouse, handsize, card[1])
                 hand, board, turn, game_step, mana = game_reader.get_current_state()
                 handsize = len(hand)
-                # print("Handsize: " + str(handsize))
-                # print("card_pos: " + str(card_pos))
             time.sleep(4)
             self.end_turn(mouse)
             time.sleep(4)
@@ -267,4 +274,3 @@ class SerpentHearthstoneGameAgent(GameAgent):
         print(board)
         print(mana)
         print(game_step)
-        # time.sleep(2)
