@@ -112,19 +112,35 @@ class HearthstoneAI:
     def get_mulligan(hand):
         mull = []
         for card in hand:
-            if card[2] >= 2:
+            if card[2] >= 3:
                 mull.append(card[1])
         return mull
 
     # Return an array of cards to play this turn
-    # This method plays cards intelligently, picking the highest power play
+    # Makes most efficient use of mana using DFS 
     @staticmethod
     def play_card(hand, mana):
-        chain = []
-        hand.reverse()
-        k = 0
-        while mana > 0:
-            pass
+    
+        # TODO how does Corridor Creeper work?
+        # Precondition: Hand sorted by increasing cost
+        def dfs(hand, mana, idx, value, to_play):
+            if mana < 0:
+                return
+            elif mana > 0:
+                if value > max_value:
+                    res = to_play
+            for i in range(idx, len(hand)):
+                to_play.append(i)
+                dfs(hand, mana - hand[i].cost, i+1, value + hand[i].value, to_play)
+                to_play.pop()
+            if value > max_value:
+                res = to_play
+        
+        max_value = 0
+        res = []
+        dfs(hand, mana, 0, 0, [])
+        return res
+
             
 
 # Preforms in-game actions using input controller
