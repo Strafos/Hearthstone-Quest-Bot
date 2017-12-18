@@ -11,6 +11,7 @@ import json
 import io
 import time
 
+# TODO remove Log folder
 # Necessary?
 # class GameState:
 #     def __init__(self, player, hand, board):
@@ -58,18 +59,21 @@ class GameReader:
             if id:
                 card_info = self.get_card_info(id)
                 card_type = ID_card['type']
+                card = None
                 if card_type == "MINION":
                     try:
                         mechanics = card_info['mechanics']
                     except:
                         mechanics = None
-                    card = MinionCard(card_info['name'], id, card_info['cost'], card_info['attack'], card_info['health'], mechanics)
+                    card = HandMinion(card_info['name'], 
+                        id, card_info['cost'], card_in_hand.tags[GameTag.ZONE_POSITION], card_info['attack'], card_info['health'], mechanics)
                 elif card_type == "SPELL":
-                    card = SpellCard(card_info['name'], id, card_info['cost'])
+                    card = HandSpell(card_info['name'], id, card_info['cost'], card_in_hand.tags[GameTag.ZONE_POSITION])
                 elif card_type == "WEAPON":
-                    card = WeaponCard(card['name'], id, card_info['cost'], card_info['attack'], card_info['durability'])
-                hand.append(card)
-        hand.sort(key=lambda x: x.cost)
+                    card = HandWeapon(card['name'], id, card_info['cost'], card_in_hand.tags[GameTag.ZONE_POSITION], card_info['attack'], card_info['durability'])
+                if card:
+                    hand.append(card)
+        hand.sort(key=lambda card: card.cost)
         return hand
     
     def get_current_player(self):
@@ -93,6 +97,7 @@ class GameReader:
             if id and "HERO" not in id:
                 ID_card = self.get_card_info(id)
                 if ID_card and ID_card['type'] != "HERO_POWER":
+                    board.append()
                     board.append((ID_card['name'], board_card.tags[GameTag.ZONE_POSITION], board_card.controller.name, board_card.tags[GameTag.TAUNT]))
         return board
 
@@ -142,7 +147,16 @@ class HearthstoneAI:
         dfs(hand, mana, 0, 0, [])
         return res
 
+    @staticmethod
+    # Kill taunts if they exist, then go face
+    def simple_smorc(board):
+
+
             
+    @staticmethod
+    # Kills taunts efficiently by taking value trades and minimizing overkill    
+    def smarter_smorc(board):
+
 
 # Preforms in-game actions using input controller
 class SerpentHearthstoneGameAgent(GameAgent):
