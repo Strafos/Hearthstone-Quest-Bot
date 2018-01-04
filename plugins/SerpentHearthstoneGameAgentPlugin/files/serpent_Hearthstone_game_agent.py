@@ -11,6 +11,9 @@ import json
 import io
 import time
 
+# Necessary?
+# class GameState:
+#     def __init__(self, player, hand, board):
 
 # Reads information from game logs using hslog and relays to the GameAgent
 class GameReader:
@@ -20,7 +23,15 @@ class GameReader:
         with io.open(log_dir, "r", encoding='utf8') as logs:
             lines = logs.readlines()
             self.logs = ''.join(lines)
-        self.game = self.get_game(self.logs)
+        parser = LogParser()
+
+        parser.read(StringIO(self.logs))
+        parser.flush()
+
+        packet_tree = parser.games[-1]
+        self.game = EntityTreeExporter(packet_tree).export().game
+
+        self.card_data = get_card_data
 
     def get_card_data(self):
         json_dir = r"C:\Users\Zaibo\Desktop\playground\sai\plugins\SerpentHearthstoneGameAgentPlugin\files\cards.json"
@@ -28,63 +39,54 @@ class GameReader:
             json_str = json_file.read()
         return json.loads(json_str)
 
-    def get_card_name(self, all_cards, card_id):
-        for card in all_cards:
+    def get_card_name(self, card_id):
+        for card in self.card_data:
             if card['id'] == card_id:
                 return card
 
-    def get_game(self, logs):
-        parser = LogParser()
-
-        parser.read(StringIO(logs))
-        parser.flush()
-
-        packet_tree = parser.games[-1]
-        self.game = EntityTreeExporter(packet_tree).export().game
+    def get_game(self):
         return self.game
 
-    def get_game_step(self, logs=None):
-        if logs:
-            game = self.get_game(logs)
-        else:
-            game = self.get_game(self.logs)
+    def get_game_step(self):
+        game = self.get_game(self.logs)
         return game.tags[GameTag.STEP]
 
-    def get_current_state(self, logs):
-        game = self.get_game(logs)
-        all_cards = self.get_card_data()
-
+    def get_current_hand(self):
         # Hand: (Name, Hand Position, Cost, Card_ID)
         hand = []
-        for hand_card in game.in_zone(3):
-            if hand_card.card_id:
-                ID_card = self.get_card_name(all_cards, hand_card.card_id)
-                hand.append((ID_card['name'], hand_card.tags[GameTag.ZONE_POSITION], ID_card['cost'], hand_card.card_id))
+        for hand_card in self.game.in_zone(3):
+            card_id = hand_card.card.id
+            if card_id:
+                ID_card = self.get_card_name(card_id)
+                hand.append((ID_card['name'], hand_card.tags[GameTag.ZONE_POSITION], ID_card['cost'], card_id))
         hand.sort(key=lambda x: x[2])
 
-        return hand, game.current_player
+        return hand
+    
+    def get_current_player(self):
+        return self.game.current_player
 
-    def get_current_board(self, logs):
-        game = get_game(DATA)
+    def get_current_state(self):
+        hand = self.get_current_hand
+        turn = self.get_current_player
+        board = self.get_current_board
+        game_step = self.get_game_step
+        mana = self.get_mana
+        return hand, turn, board, game_step, mana
+
+    def get_current_board(self):
         board = []
-        all_cards = card_data()
         # Board: (Name, Position, Controller, Taunt)
-        for board_card in game.in_zone(1):
-            safe = board_card
+        for board_card in self.game.in_zone(1):
             if type(board_card) != Card:
                 continue
             if board_card.card_id and "HERO" not in board_card.card_id:
-                ID_card = get_card_name(all_cards, board_card.card_id)
+                ID_card = get_card_name(self.card_data, board_card.card_id)
                 if ID_card:
                     board.append((ID_card['name'], board_card.tags[GameTag.ZONE_POSITION], board_card.controller.name, board_card.tags[GameTag.TAUNT]))
-        return(board)
+        return board
 
-    def get_state(self):
-        hand, player = self.get_current_state(self.logs)
-        my_turn = player.name == 'strafos'
-        return hand, my_turn
-
-    def get_mana(self):
+    def get_current_mana(self):
         players = game.players
         for player in players:
             if player.name == 'strafos':
@@ -105,7 +107,6 @@ class HearthstoneAI:
                 mull.append(card[1])
         return mull
 
-    def choose(play)
 
 # Preforms all actions
 class SerpentHearthstoneGameAgent(GameAgent):
@@ -227,8 +228,8 @@ class SerpentHearthstoneGameAgent(GameAgent):
         mouse = InputController(game = self.game)
         AI = HearthstoneAI()
         game_reader = GameReader()
-        hand, turn = game_reader.get_state()
-        game_step = game_reader.get_game_step()
+
+        hand, board, turn, game_step, mana = game_reader.get_current_state()
         print("Game step: " + str(game_reader.get_game_step()))
         if game_step == Step.BEGIN_MULLIGAN:
             # Mulligan step
