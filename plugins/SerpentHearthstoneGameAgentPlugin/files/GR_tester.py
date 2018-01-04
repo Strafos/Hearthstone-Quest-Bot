@@ -6,6 +6,8 @@ import io
 from hearthstone.enums import GameTag
 from hearthstone.entities import Player
 
+from midgame_data import DATA
+
 def card_data():
     json_file = io.open('cards.json', 'r', encoding='utf8')
     json_str = json_file.read()
@@ -27,6 +29,7 @@ def get_game(logs):
 
 def current_state(logs):
     game = get_game(logs)
+    print(game)
     all_cards = card_data()
 
     hand = []
@@ -44,10 +47,10 @@ def get_state():
         lines = logs.readlines()
         data = ''.join(lines)
     hand, player = current_state(data)
-    # for card in hand:
-    #     print(card)
-    # print(player)
-    my_turn = player.name = 'strafos'
+    for card in hand:
+        print(card)
+    print(player)
+    my_turn = player.name == 'strafos'
     return hand, my_turn
 
 def get_current_board(self, logs):
@@ -65,7 +68,21 @@ def get_current_board(self, logs):
                     board.append((ID_card['name'], board_card.tags[GameTag.ZONE_POSITION], board_card.controller.name, board_card.tags[GameTag.TAUNT]))
         return(board)
 
-hand, turn = get_state()
-for card in hand:
-    print(card)
-print(len(hand))
+game = get_game(DATA)
+# for i in dir(game):
+#     print(i)
+
+# for i in game.tags:
+#     print(i)
+
+print("@@@@")
+me = game.players[1]
+
+for i in dir(me):
+    print(i)
+
+for i in me.tags:
+    print(i)
+
+print(me.tags[GameTag.MAXRESOURCES])
+print(me.tags[GameTag.RESOURCES])

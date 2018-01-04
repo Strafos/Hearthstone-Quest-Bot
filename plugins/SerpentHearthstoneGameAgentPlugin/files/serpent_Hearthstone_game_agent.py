@@ -84,6 +84,14 @@ class GameReader:
         my_turn = player.name == 'strafos'
         return hand, my_turn
 
+    def get_mana(self):
+        players = game.players
+        for player in players:
+            if player.name == 'strafos':
+                friendly_player = player
+        return player.tags[GameTag.RESOURCES]
+
+
 # Handles actions that require thinking
 class HearthstoneAI:
     def __init__(self):
@@ -96,6 +104,8 @@ class HearthstoneAI:
             if card[2] >= 2:
                 mull.append(card[1])
         return mull
+
+    def choose(play)
 
 # Preforms all actions
 class SerpentHearthstoneGameAgent(GameAgent):
