@@ -10,52 +10,48 @@ import io
 from hearthstone.enums import GameTag
 from hearthstone.entities import Player
 
-def card_data():
-    # json_dir = r"C:\Users\Zaibo\Desktop\playground\sai\plugins\SerpentHearthstoneGameAgent\files\cards.json"
-    json_dir = r"C:\Users\Zaibo\Desktop\playground\sai\plugins\SerpentHearthstoneGameAgentPlugin\files\cards.json"
-    json_file = io.open(json_dir, 'r', encoding='utf8')
-    json_str = json_file.read()
-    json_file.close()
-    return json.loads(json_str)
+class GameReader:
+    def get_card_data(self):
+        json_dir = r"C:\Users\Zaibo\Desktop\playground\sai\plugins\SerpentHearthstoneGameAgentPlugin\files\cards.json"
+        with io.open(json_dir, 'r', encoding='utf8') as json_file:
+            json_str = json_file.read()
+        return json.loads(json_str)
 
-def get_card_name(all_cards, card_id):
-    for card in all_cards:
-        if card['id'] == card_id:
-            return card
+    def get_card_name(self, all_cards, card_id):
+        for card in all_cards:
+            if card['id'] == card_id:
+                return card
 
-def get_game(logs):
-    parser = LogParser()
+    def get_game(self, logs):
+        parser = LogParser()
 
-    parser.read(StringIO(logs))
-    parser.flush()
+        parser.read(StringIO(logs))
+        parser.flush()
 
-    packet_tree = parser.games[-1]
-    return EntityTreeExporter(packet_tree).export().game
+        packet_tree = parser.games[-1]
+        return EntityTreeExporter(packet_tree).export().game
 
-def current_state(logs):
-    game = get_game(logs)
-    all_cards = card_data()
+    def get_current_state(self, logs):
+        game = self.get_game(logs)
+        all_cards = self.get_card_data()
 
-    hand = []
-    for hand_card in game.in_zone(3):
-        if hand_card.card_id:
-            ID_card = get_card_name(all_cards, hand_card.card_id)
-            hand.append((ID_card['name'], hand_card.tags[GameTag.ZONE_POSITION], ID_card['cost'], hand_card.card_id))
-    hand.sort(key=lambda x: x[2])
+        hand = []
+        for hand_card in game.in_zone(3):
+            if hand_card.card_id:
+                ID_card = self.get_card_name(all_cards, hand_card.card_id)
+                hand.append((ID_card['name'], hand_card.tags[GameTag.ZONE_POSITION], ID_card['cost'], hand_card.card_id))
+        hand.sort(key=lambda x: x[2])
 
-    return hand, game.current_player
+        return hand, game.current_player
 
-def get_state():
-    log_dir = r"C:\Program Files (x86)\Hearthstone\Logs\Power.log"
-    with open(log_dir, "r") as logs:
-        lines = logs.readlines()
-        data = ''.join(lines)
-    hand, player = current_state(data)
-    # for card in hand:
-    #     print(card)
-    # print(player)
-    my_turn = player.name == 'strafos'
-    return hand, my_turn
+    def get_state(self):
+        log_dir = r"C:\Program Files (x86)\Hearthstone\Logs\Power.log"
+        with open(log_dir, "r") as logs:
+            lines = logs.readlines()
+            data = ''.join(lines)
+        hand, player = self.get_current_state(data)
+        my_turn = player.name == 'strafos'
+        return hand, my_turn
 
 class SerpentHearthstoneGameAgent(GameAgent):
 
@@ -115,13 +111,14 @@ class SerpentHearthstoneGameAgent(GameAgent):
 
     def handle_play(self, game_frame):
         mouse = InputController(game = self.game)
-        hand, turn = get_state()
+        game_reader = GameReader()
+        hand, turn = game_reader.get_state()
         if turn:
             handsize = len(hand)
             time.sleep(3)
             for card in hand:
                 self.play_card(mouse, handsize, card[1])
                 handsize = len(hand)
-                hand, turn = get_state()
+                hand, turn = game_reader.get_state()
             time.sleep(2)
             self.end_turn(mouse)
