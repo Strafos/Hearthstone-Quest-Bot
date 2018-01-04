@@ -11,8 +11,9 @@ import json
 import io
 import time
 
+
+# Reads information from game logs using hslog and relays to the GameAgent
 class GameReader:
-    # TODO clean up self.logs and logs
 
     def __init__(self):
         log_dir = r"C:\Program Files (x86)\Hearthstone\Logs\Power.log"
@@ -68,6 +69,20 @@ class GameReader:
         my_turn = player.name == 'strafos'
         return hand, my_turn
 
+# Handles actions that require thinking
+class HearthstoneAI:
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def get_mulligan(hand):
+        mull = []
+        for card in hand:
+            if card[2] >= 2:
+                mull.append(card[1])
+        return mull
+
+# Preforms all actions
 class SerpentHearthstoneGameAgent(GameAgent):
     X_RES = 840
     Y_RES = 473
@@ -96,13 +111,6 @@ class SerpentHearthstoneGameAgent(GameAgent):
             mouse.move(678, 216, .25)
         mouse.click()
     
-    def get_mulligan(self, hand):
-        mull = []
-        for card in hand:
-            if card[2] >= 2:
-                mull.append(card[1])
-        return mull
-
     def mull_card(self, mouse, hand, mull):
         card_location = [
             [(0, 0), (274, 221), (421, 220), (573, 221)],
@@ -158,18 +166,22 @@ class SerpentHearthstoneGameAgent(GameAgent):
 
     def handle_play(self, game_frame):
         mouse = InputController(game = self.game)
+        AI = HearthstoneAI()
         game_reader = GameReader()
         hand, turn = game_reader.get_state()
         game_step = game_reader.get_game_step()
         print("Game step: " + str(game_reader.get_game_step()))
         if game_step == Step.BEGIN_MULLIGAN:
+            # Mulligan step
             time.sleep(4)
             mull = self.get_mulligan(hand)
             self.mull_card(mouse, hand, mull)
             time.sleep(4)
         elif game_step == Step.FINAL_GAMEOVER:
+            # Start new game
             self.start_game(mouse)
         elif turn:
+            # Turn logic
             handsize = len(hand)
             time.sleep(4)
             for card in hand:
