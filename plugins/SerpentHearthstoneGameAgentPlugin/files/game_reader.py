@@ -50,3 +50,18 @@ def get_state():
     print(player)
     my_turn = player.name = 'strafos'
     return hand, my_turn
+
+def get_current_board(self, logs):
+        game = get_game(DATA)
+        board = []
+        all_cards = card_data()
+        # Board: (Name, Position, Controller, Taunt)
+        for board_card in game.in_zone(1):
+            safe = board_card
+            if type(board_card) != Card:
+                continue
+            if board_card.card_id and "HERO" not in board_card.card_id:
+                ID_card = get_card_name(all_cards, board_card.card_id)
+                if ID_card:
+                    board.append((ID_card['name'], board_card.tags[GameTag.ZONE_POSITION], board_card.controller.name, board_card.tags[GameTag.TAUNT]))
+        return(board)
