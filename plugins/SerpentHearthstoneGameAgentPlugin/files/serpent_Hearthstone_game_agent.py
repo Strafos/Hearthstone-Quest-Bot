@@ -39,6 +39,8 @@ class SerpentHearthstoneGameAgent(GameAgent):
             [(0, 0), (281, 455), (309, 448), (340, 442), (365, 439), (390, 436), (419, 431), (447, 431), (471, 438), (509, 450)],
             [(0, 0), (275, 462), (300, 455), (328, 448), (352, 444), (376, 435), (396, 434), (426, 436), (450, 437), (472, 444), (503, 446)]
         ]
+        board = (235, 159)
+
         if card == 0 or card > handsize:
             return None
 
@@ -48,7 +50,6 @@ class SerpentHearthstoneGameAgent(GameAgent):
     def setup_play(self):
         mouse = InputController(game = self.game)
         # self.click_play(mouse)
-        self.hand5(mouse, 0)
 
     def handle_play(self, game_frame):
         print("Hello")        
