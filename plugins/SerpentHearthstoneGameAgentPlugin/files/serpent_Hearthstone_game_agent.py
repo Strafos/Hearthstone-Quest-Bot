@@ -1,16 +1,26 @@
 from serpent.game_agent import GameAgent
 from serpent.input_controller import MouseButton, InputController
-import time
 
 from hslog import LogParser
 from hslog.export import EntityTreeExporter
 from io import StringIO
-import json
-import io
-from hearthstone.enums import GameTag
+from hearthstone.enums import GameTag, Step
 from hearthstone.entities import Player
 
+import json
+import io
+import time
+
 class GameReader:
+    # TODO clean up self.logs and logs
+
+    def __init__(self):
+        log_dir = r"C:\Program Files (x86)\Hearthstone\Logs\Power.log"
+        with io.open(log_dir, "r", encoding='utf8') as logs:
+            lines = logs.readlines()
+            self.logs = ''.join(lines)
+        self.game = self.get_game(self.logs)
+
     def get_card_data(self):
         json_dir = r"C:\Users\Zaibo\Desktop\playground\sai\plugins\SerpentHearthstoneGameAgentPlugin\files\cards.json"
         with io.open(json_dir, 'r', encoding='utf8') as json_file:
@@ -29,12 +39,21 @@ class GameReader:
         parser.flush()
 
         packet_tree = parser.games[-1]
-        return EntityTreeExporter(packet_tree).export().game
+        self.game = EntityTreeExporter(packet_tree).export().game
+        return self.game
+
+    def get_game_step(self, logs=None):
+        if logs:
+            game = self.get_game(logs)
+        else:
+            game = self.get_game(self.logs)
+        return game.tags[GameTag.STEP]
 
     def get_current_state(self, logs):
         game = self.get_game(logs)
         all_cards = self.get_card_data()
 
+        # Hand: (Name, Hand Position, Cost, Card_ID)
         hand = []
         for hand_card in game.in_zone(3):
             if hand_card.card_id:
@@ -45,15 +64,13 @@ class GameReader:
         return hand, game.current_player
 
     def get_state(self):
-        log_dir = r"C:\Program Files (x86)\Hearthstone\Logs\Power.log"
-        with open(log_dir, "r") as logs:
-            lines = logs.readlines()
-            data = ''.join(lines)
-        hand, player = self.get_current_state(data)
+        hand, player = self.get_current_state(self.logs)
         my_turn = player.name == 'strafos'
         return hand, my_turn
 
 class SerpentHearthstoneGameAgent(GameAgent):
+    X_RES = 840
+    Y_RES = 473
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -72,9 +89,36 @@ class SerpentHearthstoneGameAgent(GameAgent):
         mouse.move(600, 460, .25)
         mouse.click()
     
-    def end_turn(self, mouse):
-        mouse.move(678, 216, .25)
+    def end_turn(self, mouse, mull=False):
+        if mull:
+            mouse.move(432, 369, .25)
+        else:
+            mouse.move(678, 216, .25)
         mouse.click()
+    
+    def get_mulligan(self, hand):
+        mull = []
+        for card in hand:
+            if card[2] >= 2:
+                mull.append(card[1])
+        return mull
+
+    def mull_card(self, mouse, hand, mull):
+        card_location = [
+            [(0, 0), (274, 221), (421, 220), (573, 221)],
+            [(0, 0), (252, 214), (370, 214), (480, 220), (585, 220)]
+        ]
+
+        print(len(hand))
+        if len(hand) == 3:
+            hand_loc = card_location[0]
+        else:
+            hand_loc = card_location[1]
+        for mull_pos in mull:
+            mouse.move(hand_loc[mull_pos][0], hand_loc[mull_pos][1], .25)
+            mouse.click()
+        self.end_turn(mouse, True)
+
 
     def play_card(self, mouse, handsize, card_pos):
         card_location = [
@@ -94,8 +138,6 @@ class SerpentHearthstoneGameAgent(GameAgent):
         if card_pos == 0 or card_pos > handsize:
             return None
 
-        print("Handsize: " + str(handsize))
-        print("card_pos: " + str(card_pos))
         coords = card_location[handsize][card_pos]
         mouse.move(coords[0], coords[1], .3)
         mouse.click()
@@ -113,12 +155,21 @@ class SerpentHearthstoneGameAgent(GameAgent):
         mouse = InputController(game = self.game)
         game_reader = GameReader()
         hand, turn = game_reader.get_state()
-        if turn:
+        game_step = game_reader.get_game_step()
+        print(game_reader.get_game_step())
+        if game_step == Step.BEGIN_MULLIGAN:
+            time.sleep(10)
+            mull = self.get_mulligan(hand)
+            self.mull_card(mouse, hand, mull)
+            time.sleep(2)
+        elif turn:
             handsize = len(hand)
-            time.sleep(3)
+            time.sleep(4)
             for card in hand:
                 self.play_card(mouse, handsize, card[1])
-                handsize = len(hand)
                 hand, turn = game_reader.get_state()
+                handsize = len(hand)
+                print("Handsize: " + str(handsize))
+                # print("card_pos: " + str(card_pos))
             time.sleep(2)
             self.end_turn(mouse)
