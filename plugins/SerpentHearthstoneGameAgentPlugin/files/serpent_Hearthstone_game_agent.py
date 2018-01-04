@@ -1,6 +1,7 @@
 from serpent.game_agent import GameAgent
 from serpent.input_controller import MouseButton, InputController
 import time
+import game_reader
 
 class SerpentHearthstoneGameAgent(GameAgent):
 
