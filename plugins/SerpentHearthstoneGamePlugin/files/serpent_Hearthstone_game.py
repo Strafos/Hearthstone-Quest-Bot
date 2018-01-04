@@ -16,7 +16,7 @@ class SerpentHearthstoneGame(Game, metaclass=Singleton):
 
         
         
-        kwargs["executable_path"] = r"C:\\\Users\\\Zaibo\\\Desktop\\\playground\\\sai\\\plugins\\\SerpentHearthstoneGamePlugin\\\files\\\test.exe"
+        kwargs["executable_path"] = r"C:\\\Users\\\Zaibo\\\Desktop\\\playground\\\sai\\\plugins\\\SerpentHearthstoneGamePlugin\\\files\\\Hearthstone.exe"
         
         
 
