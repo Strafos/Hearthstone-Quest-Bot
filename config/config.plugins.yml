@@ -1,0 +1,4 @@
+SerpentHearthstoneGameAgentPlugin:
+  frame_handler: PLAY
+SerpentHearthstoneGamePlugin:
+  fps: 2
