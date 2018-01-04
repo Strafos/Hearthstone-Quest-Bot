@@ -47,3 +47,6 @@ def get_state():
     hand, player = current_state(data)
     for card in hand:
         print(card)
+    print(player)
+    my_turn = player.name = 'strafos'
+    return hand, my_turn

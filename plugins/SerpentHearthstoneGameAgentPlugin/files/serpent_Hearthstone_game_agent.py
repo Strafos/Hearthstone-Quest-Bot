@@ -26,7 +26,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
         mouse.move(678, 216, .25)
         mouse.click()
 
-    def get_card_location(self, handsize, card):
+    def play_card(self, mouse, handsize, card_pos):
         card_location = [
             [(0, 0)],
             [(0, 0), (400, 430)],
@@ -40,25 +40,27 @@ class SerpentHearthstoneGameAgent(GameAgent):
             [(0, 0), (281, 455), (309, 448), (340, 442), (365, 439), (390, 436), (419, 431), (447, 431), (471, 438), (509, 450)],
             [(0, 0), (275, 462), (300, 455), (328, 448), (352, 444), (376, 435), (396, 434), (426, 436), (450, 437), (472, 444), (503, 446)]
         ]
-        board = (235, 159)
 
-        if card == 0 or card > handsize:
+        if card_pos == 0 or card_pos > handsize:
             return None
 
-        coords = card_location[handsize][card]
-        return coords
+        coords = card_location[handsize][card_pos]
+        mouse.move(coords[0], coords[1], .3)
+        mouse.click()
+        self.move_board(mouse)
+    
+    def move_board(self, mouse):
+        board = (235, 159)
+        mouse.move(board[0], board[1], .2)
 
     def setup_play(self):
         mouse = InputController(game = self.game)
-        # self.click_play(mouse)
 
     def handle_play(self, game_frame):
-        print("Hello")        
-
-        # Visual Debugger
-        # for i, game_frame in enumerate(self.game_frame_buffer.frames):
-        #     self.visual_debugger.store_image_data(
-        #         game_frame.frame,
-        #         game_frame.frame.shape,
-        #         str(i)
-        #     
+        mouse = InputController(game = self.game)
+        hand, turn = reader.get_state()
+        if turn:
+            handsize = len(hand)
+            for card_pos in range(1, handsize + 1):
+                self.play_card(mouse, handsize, card_pos)
+            self.end_turn
