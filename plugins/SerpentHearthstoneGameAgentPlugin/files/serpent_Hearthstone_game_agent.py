@@ -141,9 +141,14 @@ class SerpentHearthstoneGameAgent(GameAgent):
         coords = card_location[handsize][card_pos]
         mouse.move(coords[0], coords[1], .3)
         mouse.click()
-        self.move_board(mouse)
+        self.move_to_board(mouse)
     
-    def move_board(self, mouse):
+    def start_game(self, mouse):
+        mouse.move(612, 385, .25)
+        mouse.click()
+        time.sleep(3)
+    
+    def move_to_board(self, mouse):
         board = (235, 159)
         mouse.move(board[0], board[1], .2)
         mouse.click()
@@ -156,12 +161,14 @@ class SerpentHearthstoneGameAgent(GameAgent):
         game_reader = GameReader()
         hand, turn = game_reader.get_state()
         game_step = game_reader.get_game_step()
-        print(game_reader.get_game_step())
+        print("Game step: " + str(game_reader.get_game_step()))
         if game_step == Step.BEGIN_MULLIGAN:
-            time.sleep(10)
+            time.sleep(4)
             mull = self.get_mulligan(hand)
             self.mull_card(mouse, hand, mull)
-            time.sleep(2)
+            time.sleep(4)
+        elif game_step == Step.FINAL_GAMEOVER:
+            self.start_game(mouse)
         elif turn:
             handsize = len(hand)
             time.sleep(4)
@@ -169,7 +176,8 @@ class SerpentHearthstoneGameAgent(GameAgent):
                 self.play_card(mouse, handsize, card[1])
                 hand, turn = game_reader.get_state()
                 handsize = len(hand)
-                print("Handsize: " + str(handsize))
+                # print("Handsize: " + str(handsize))
                 # print("card_pos: " + str(card_pos))
-            time.sleep(2)
+            # time.sleep(4)
             self.end_turn(mouse)
+            time.sleep(4)
