@@ -27,7 +27,6 @@ def get_game(logs):
 
 def current_state(logs):
     game = get_game(logs)
-    print(game)
     all_cards = card_data()
 
     hand = []
@@ -45,9 +44,9 @@ def get_state():
         lines = logs.readlines()
         data = ''.join(lines)
     hand, player = current_state(data)
-    for card in hand:
-        print(card)
-    print(player)
+    # for card in hand:
+    #     print(card)
+    # print(player)
     my_turn = player.name = 'strafos'
     return hand, my_turn
 
@@ -65,3 +64,8 @@ def get_current_board(self, logs):
                 if ID_card:
                     board.append((ID_card['name'], board_card.tags[GameTag.ZONE_POSITION], board_card.controller.name, board_card.tags[GameTag.TAUNT]))
         return(board)
+
+hand, turn = get_state()
+for card in hand:
+    print(card)
+print(len(hand))
