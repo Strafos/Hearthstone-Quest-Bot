@@ -2,7 +2,7 @@ from hslog import LogParser
 from hslog.export import EntityTreeExporter
 from io import StringIO
 from hearthstone.enums import GameTag, Step
-from hearthstone.entities import Player
+from hearthstone.entities import Player, Card
 
 import json
 import io
@@ -50,7 +50,7 @@ class GameReader:
         # When returned, Hand sorts by cost
         hand = []
         for hand_card in self.game.in_zone(3):
-            card_id = hand_card.card.id
+            card_id = hand_card.card_id
             if card_id:
                 ID_card = self.get_card_name(card_id)
                 hand.append((ID_card['name'], hand_card.tags[GameTag.ZONE_POSITION], ID_card['cost'], card_id))
@@ -62,11 +62,11 @@ class GameReader:
         return self.game.current_player
 
     def get_current_state(self):
-        hand = self.get_current_hand
-        turn = self.get_current_player
-        board = self.get_current_board
-        game_step = self.get_game_step
-        mana = self.get_mana
+        hand = self.get_current_hand()
+        turn = self.get_current_player()
+        board = self.get_current_board()
+        game_step = self.get_game_step()
+        mana = self.get_current_mana()
         return hand, turn, board, game_step, mana
 
     def get_current_board(self):
@@ -75,15 +75,23 @@ class GameReader:
         for board_card in self.game.in_zone(1):
             if type(board_card) != Card:
                 continue
-            if board_card.card_id and "HERO" not in board_card.card_id:
-                ID_card = get_card_name(self.card_data, board_card.card_id)
-                if ID_card:
+            id = board_card.card.id
+            if id and "HERO" not in id:
+                ID_card = self.get_card_name(id)
+                if ID_card and ID_card['type'] != "HERO_POWER":
                     board.append((ID_card['name'], board_card.tags[GameTag.ZONE_POSITION], board_card.controller.name, board_card.tags[GameTag.TAUNT]))
         return board
 
     def get_current_mana(self):
-        players = game.players
+        players = self.game.players
         for player in players:
             if player.name == 'strafos':
                 friendly_player = player
         return player.tags[GameTag.RESOURCES]
+
+gr = GameReader()
+hand, turn, board, game_step, mana = gr.get_current_state()
+print(hand)
+print(turn)
+print(board)
+print(mana)
