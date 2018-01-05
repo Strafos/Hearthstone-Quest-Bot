@@ -81,12 +81,44 @@ class SerpentHearthstoneGameAgent(GameAgent):
 
         self.analytics_client = None
 
-    def click_play(self, mouse):
+    def handle_start_menu(self, mouse, option):
+        menu_items = {
+            "PLAY" : (422, 142),
+            "SOLO" : (419, 176),
+            "ARENA" : (421, 209),
+            "TAVERN" : (418, 247),
+            "QUESTS" : (230, 414),
+            "PACKS" : (336, 396),
+            "COLLECTION" : (453, 392)
+        }
         mouse.click()
-        mouse.move(400, 180, .25)
+        mouse.move(menu_items[option][0], menu_items[option][1], .25)
         mouse.click()
         time.sleep(2)
-        mouse.move(600, 460, .25)
+    
+    def handle_deck_select(self, mouse, option):
+        items = [
+            (0, 0), 
+            (208, 127), (313, 130), (420, 127), # 1 2 3
+            (203, 229), (314, 223), (418, 227), # 4 5 6
+            (203, 324), (311, 328), (421, 328), # 7 8 9 
+        ]
+        # (612, 22), # wild_toggle 10
+        # (572, 72), # casual mode 11
+        # (655, 80), # ranked 12
+        next_page = (492, 228) # next 13
+        prev_page = (132, 225) # prev 14
+        if option > 9:
+            option -= 9
+            mouse.move(next_page[0], next_page[1], .25)
+            mouse.click()
+        else:
+            mouse.move(prev_page[0], prev_page[1], .25)
+            mouse.click()
+
+
+        selected_option = items[option]
+        mouse.move(selected_option[0], selected_option[1], .25)
         mouse.click()
     
     def end_turn(self, mouse, mull=False):
@@ -155,6 +187,8 @@ class SerpentHearthstoneGameAgent(GameAgent):
 
     def setup_play(self):
         mouse = InputController(game = self.game)
+        self.handle_start_menu(mouse, "PLAY")
+        self.handle_deck_select(mouse, 13)
 
     def handle_play(self, game_frame):
         mouse = InputController(game = self.game)
@@ -178,6 +212,6 @@ class SerpentHearthstoneGameAgent(GameAgent):
                 handsize = len(hand)
                 # print("Handsize: " + str(handsize))
                 # print("card_pos: " + str(card_pos))
-            # time.sleep(4)
+            time.sleep(50)
             self.end_turn(mouse)
             time.sleep(4)
