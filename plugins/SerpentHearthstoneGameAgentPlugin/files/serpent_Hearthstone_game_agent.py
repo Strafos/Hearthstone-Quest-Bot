@@ -208,7 +208,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
         if game_step == Step.BEGIN_MULLIGAN:
             # Mulligan step
             time.sleep(4)
-            mull = self.get_mulligan(hand)
+            mull = HearthstoneAI.get_mulligan(hand)
             self.mull_card(mouse, hand, mull)
             time.sleep(4)
         elif game_step == Step.FINAL_GAMEOVER:
