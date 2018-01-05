@@ -36,7 +36,7 @@ def current_state(logs):
     for hand_card in game.in_zone(3):
         if hand_card.card_id:
             ID_card = get_card_name(all_cards, hand_card.card_id)
-            hand.append((ID_card['name'], hand_card.tags[GameTag.ZONE_POSITION], ID_card['cost'], hand_card.card_id))
+            hand.append((ID_card['name'], hand_card.tags[GameTag.ZONE_POSITION], ID_card['cost'], hand_card.card_id, hand_card))
     hand.sort(key=lambda x: x[1])
 
     return hand, game.current_player
@@ -73,16 +73,8 @@ game = get_game(DATA)
 #     print(i)
 
 # for i in game.tags:
-#     print(i)
+#     print(i
 
-print("@@@@")
-me = game.players[1]
-
-for i in dir(me):
+hand, turn = get_state()
+for i in hand:
     print(i)
-
-for i in me.tags:
-    print(i)
-
-print(me.tags[GameTag.MAXRESOURCES])
-print(me.tags[GameTag.RESOURCES])

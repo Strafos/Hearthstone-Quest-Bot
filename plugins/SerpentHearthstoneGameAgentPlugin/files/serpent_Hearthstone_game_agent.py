@@ -31,7 +31,7 @@ class GameReader:
         packet_tree = parser.games[-1]
         self.game = EntityTreeExporter(packet_tree).export().game
 
-        self.card_data = get_card_data
+        self.card_data = self.get_card_data()
 
     def get_card_data(self):
         json_dir = r"C:\Users\Zaibo\Desktop\playground\sai\plugins\SerpentHearthstoneGameAgentPlugin\files\cards.json"
@@ -53,6 +53,7 @@ class GameReader:
 
     def get_current_hand(self):
         # Hand: (Name, Hand Position, Cost, Card_ID)
+        # When returned, Hand sorts by cost
         hand = []
         for hand_card in self.game.in_zone(3):
             card_id = hand_card.card.id
@@ -96,9 +97,6 @@ class GameReader:
 
 # Handles actions that require thinking
 class HearthstoneAI:
-    def __init__(self):
-        pass
-
     @staticmethod
     def get_mulligan(hand):
         mull = []
@@ -107,6 +105,16 @@ class HearthstoneAI:
                 mull.append(card[1])
         return mull
 
+    # Return an array of cards to play this turn
+    # This method plays cards intelligently, picking the highest power play
+    @staticmethod
+    def play_card(hand, mana):
+        chain = []
+        hand.reverse()
+        while mana > 0:
+
+
+            
 
 # Preforms all actions
 class SerpentHearthstoneGameAgent(GameAgent):
