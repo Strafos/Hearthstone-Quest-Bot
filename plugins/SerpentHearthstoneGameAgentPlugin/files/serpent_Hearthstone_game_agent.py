@@ -64,7 +64,6 @@ class GameReader:
         return hand
     
     def get_current_player(self):
-        print(self.game.current_player)
         return self.game.current_player.name == 'Strafos'
 
     def get_current_state(self):

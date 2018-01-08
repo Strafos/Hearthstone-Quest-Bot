@@ -12,14 +12,13 @@ from board_state import DATA
 class GameReader:
 
     def __init__(self):
-        # log_dir = r"C:\Program Files (x86)\Hearthstone\Logs\Power.log"
-        # with io.open(log_dir, "r", encoding='utf8') as logs:
-        #     lines = logs.readlines()
-        #     self.logs = ''.join(lines)
+        log_dir = r"C:\Program Files (x86)\Hearthstone\Logs\Power.log"
+        with io.open(log_dir, "r", encoding='utf8') as logs:
+            lines = logs.readlines()
+            self.logs = ''.join(lines)
         parser = LogParser()
 
-        # parser.read(StringIO(self.logs))
-        parser.read(StringIO(DATA))
+        parser.read(StringIO(self.logs))
         parser.flush()
 
         packet_tree = parser.games[-1]
@@ -28,8 +27,7 @@ class GameReader:
         self.card_data = self.get_card_data()
 
     def get_card_data(self):
-        json_dir = "/home/zaibo/code/Hearthstone-Quest-Bot/plugins/SerpentHearthstoneGameAgentPlugin/files/cards.json" 
-        # json_dir = r"C:\Users\Zaibo\Desktop\playground\sai\plugins\SerpentHearthstoneGameAgentPlugin\files\cards.json"
+        json_dir = r"C:\Users\Zaibo\Desktop\playground\sai\plugins\SerpentHearthstoneGameAgentPlugin\files\cards.json"
         with io.open(json_dir, 'r', encoding='utf8') as json_file:
             json_str = json_file.read()
         return json.loads(json_str)
@@ -95,3 +93,4 @@ print(hand)
 print(turn)
 print(board)
 print(mana)
+print(game_step)
