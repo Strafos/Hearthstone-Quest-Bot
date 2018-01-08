@@ -30,7 +30,7 @@ class GameReader:
 
         packet_tree = parser.games[-1]
         self.game = EntityTreeExporter(packet_tree).export().game
-
+        self.player_names = ['Strafos', 'strafos']
         self.card_data = self.get_card_data()
 
     def get_card_data(self):
@@ -64,7 +64,7 @@ class GameReader:
         return hand
     
     def get_current_player(self):
-        return self.game.current_player.name == 'strafos' or self.game.current_player.name == 'Strafos'
+        return self.game.current_player
 
     def get_current_state(self):
         hand = self.get_current_hand()
@@ -90,9 +90,12 @@ class GameReader:
     def get_current_mana(self):
         players = self.game.players
         for player in players:
-            if player.name == 'Strafos' or player.name == 'strafos':
+            if player.name in self.player_names:
                 friendly_player = player
-        return friendly_player.tags[GameTag.RESOURCES]
+        try:
+            return friendly_player.tags[GameTag.RESOURCES]
+        except:
+            return 0
 
 # Handles actions that require thinking
 class HearthstoneAI:

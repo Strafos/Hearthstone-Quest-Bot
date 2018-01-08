@@ -23,7 +23,7 @@ class GameReader:
 
         packet_tree = parser.games[-1]
         self.game = EntityTreeExporter(packet_tree).export().game
-
+        self.player_names = ['Strafos', 'strafos']
         self.card_data = self.get_card_data()
 
     def get_card_data(self):
@@ -83,9 +83,13 @@ class GameReader:
     def get_current_mana(self):
         players = self.game.players
         for player in players:
-            if player.name == 'strafos':
+            if player.name in self.player_names:
                 friendly_player = player
-        return player.tags[GameTag.RESOURCES]
+        try:
+            return friendly_player.tags[GameTag.RESOURCES]
+        except:
+            return 0
+
 
 gr = GameReader()
 hand, turn, board, game_step, mana = gr.get_current_state()
