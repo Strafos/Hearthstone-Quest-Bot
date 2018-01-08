@@ -112,6 +112,7 @@ class HearthstoneAI:
         hand.reverse()
         k = 0
         while mana > 0:
+            pass
             
 
 # Preforms all actions
@@ -251,10 +252,10 @@ class SerpentHearthstoneGameAgent(GameAgent):
             time.sleep(4)
             for card in hand:
                 self.play_card(mouse, handsize, card[1])
-                hand, turn = game_reader.get_state()
+                hand, board, turn, game_step, mana = game_reader.get_current_state()
                 handsize = len(hand)
                 # print("Handsize: " + str(handsize))
                 # print("card_pos: " + str(card_pos))
-            time.sleep(50)
+            time.sleep(4)
             self.end_turn(mouse)
             time.sleep(4)
