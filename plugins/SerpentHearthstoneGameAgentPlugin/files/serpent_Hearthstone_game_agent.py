@@ -64,7 +64,8 @@ class GameReader:
         return hand
     
     def get_current_player(self):
-        return self.game.current_player
+        print(self.game.current_player)
+        return self.game.current_player.name == 'Strafos'
 
     def get_current_state(self):
         hand = self.get_current_hand()
@@ -76,6 +77,7 @@ class GameReader:
 
     def get_current_board(self):
         board = []
+        return None
         # Board: (Name, Position, Controller, Taunt)
         for board_card in self.game.in_zone(1):
             if type(board_card) != Card:
@@ -91,7 +93,7 @@ class GameReader:
         return 
         players = self.game.players
         for player in players:
-            if player.name == 'strafos':
+            if player.name == 'Strafos':
                 friendly_player = player
         return player.tags[GameTag.RESOURCES]
 
@@ -237,8 +239,9 @@ class SerpentHearthstoneGameAgent(GameAgent):
         AI = HearthstoneAI()
         game_reader = GameReader()
 
-        hand, board, turn, game_step, mana = game_reader.get_current_state()
+        hand, turn, board, game_step, mana = game_reader.get_current_state()
         print("Game step: " + str(game_reader.get_game_step()))
+        print(turn)
         if game_step == Step.BEGIN_MULLIGAN:
             # Mulligan step
             time.sleep(4)
