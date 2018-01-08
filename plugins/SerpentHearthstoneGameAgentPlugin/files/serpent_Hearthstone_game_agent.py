@@ -5,7 +5,7 @@ from hslog import LogParser
 from hslog.export import EntityTreeExporter
 from io import StringIO
 from hearthstone.enums import GameTag, Step
-from hearthstone.entities import Player
+from hearthstone.entities import Player, Card
 
 import json
 import io
@@ -80,7 +80,7 @@ class GameReader:
         for board_card in self.game.in_zone(1):
             if type(board_card) != Card:
                 continue
-            id = board_card.card.id
+            id = board_card.card_id
             if id and "HERO" not in id:
                 ID_card = self.get_card_name(id)
                 if ID_card and ID_card['type'] != "HERO_POWER":
@@ -88,6 +88,7 @@ class GameReader:
         return board
 
     def get_current_mana(self):
+        return 
         players = self.game.players
         for player in players:
             if player.name == 'strafos':
@@ -227,8 +228,9 @@ class SerpentHearthstoneGameAgent(GameAgent):
 
     def setup_play(self):
         mouse = InputController(game = self.game)
-        self.handle_start_menu(mouse, "PLAY")
-        self.handle_deck_select(mouse, 13)
+        return
+        # self.handle_start_menu(mouse, "PLAY")
+        # self.handle_deck_select(mouse, 13)
 
     def handle_play(self, game_frame):
         mouse = InputController(game = self.game)
