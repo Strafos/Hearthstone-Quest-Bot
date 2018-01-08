@@ -90,9 +90,9 @@ class GameReader:
     def get_current_mana(self):
         players = self.game.players
         for player in players:
-            if player.name == 'Strafos':
+            if player.name == 'Strafos' or player.name == 'strafos':
                 friendly_player = player
-        return player.tags[GameTag.RESOURCES]
+        return friendly_player.tags[GameTag.RESOURCES]
 
 # Handles actions that require thinking
 class HearthstoneAI:
