@@ -113,12 +113,14 @@ class GameReader:
 
 # Handles actions that require thinking
 class HearthstoneAI:
+
+    # Decides what to mulligan based solely on mana threshold
     @staticmethod
     def get_mulligan(hand):
         mull = []
         for card in hand:
-            if card[2] >= 3:
-                mull.append(card[1])
+            if card.cost >= 3:
+                mull.append(card.position)
         return mull
 
     # Return an array of cards to play this turn
@@ -273,8 +275,8 @@ class SerpentHearthstoneGameAgent(GameAgent):
     def setup_play(self):
         mouse = InputController(game = self.game)
         return
-        # self.handle_start_menu(mouse, "PLAY")
-        # self.handle_deck_select(mouse, 13)
+        self.handle_start_menu(mouse, "PLAY")
+        self.handle_deck_select(mouse, 13)
 
     def handle_play(self, game_frame):
         mouse = InputController(game = self.game)
@@ -292,23 +294,16 @@ class SerpentHearthstoneGameAgent(GameAgent):
             # Start new game
             self.start_game(mouse)
         elif turn:
-            # Turn logic
-            # handsize = len(hand)
-            # time.sleep(4)
-            # for card in hand:
-            #     self.play_card(mouse, handsize, card[1])
-            #     hand, board, turn, game_step, mana = game_reader.get_current_state()
-            #     handsize = len(hand)
-            # time.sleep(4)
-            # self.end_turn(mouse)
-            # time.sleep(4)
             chain = HearthstoneAI.play_card(hand, mana)
+            time.sleep(4)
             while chain:
                 # 1. Calculate best chain of cards to play using HearthstoneAI.play_cards
                 # 2. Play first card and wait in case of drawing card
                 # 3. Repeat steps 1-2
                 self.play_card(mouse, hand.size, cards_to_play[0])
+                hand, turn, board, game_step, mana = game_reader.update_state()
                 chain = HearthstoneAI.play_card(hand, mana)
+            self.end_turn(mouse)
 
         print(hand)
         print(turn)
