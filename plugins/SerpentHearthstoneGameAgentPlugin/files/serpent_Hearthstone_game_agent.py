@@ -286,10 +286,10 @@ class SerpentHearthstoneGameAgent(GameAgent):
         hand, turn, board, game_step, mana = game_reader.update_state()
         if game_step == Step.BEGIN_MULLIGAN:
             # Mulligan step
-            time.sleep(4)
+            # time.sleep(4)
             mull = HearthstoneAI.get_mulligan(hand)
             self.mull_card(mouse, hand, mull)
-            time.sleep(4)
+            # time.sleep(4)
         elif game_step == Step.FINAL_GAMEOVER:
             # Start new game
             self.start_game(mouse)
@@ -304,9 +304,3 @@ class SerpentHearthstoneGameAgent(GameAgent):
                 hand, turn, board, game_step, mana = game_reader.update_state()
                 chain = HearthstoneAI.play_card(hand, mana)
             self.end_turn(mouse)
-
-        print(hand)
-        print(turn)
-        print(board)
-        print(mana)
-        print(game_step)
