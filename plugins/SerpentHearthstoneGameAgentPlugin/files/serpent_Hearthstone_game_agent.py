@@ -65,8 +65,7 @@ class GameReader:
                         mechanics = card_info['mechanics']
                     except:
                         mechanics = None
-                    card = HandMinion(card_info['name'], 
-                        id, card_info['cost'], card_in_hand.tags[GameTag.ZONE_POSITION], card_info['attack'], card_info['health'], mechanics)
+                    card = HandMinion(card_info['name'], id, card_info['cost'], card_in_hand.tags[GameTag.ZONE_POSITION], card_info['attack'], card_info['health'], mechanics)
                 elif card_type == "SPELL":
                     card = HandSpell(card_info['name'], id, card_info['cost'], card_in_hand.tags[GameTag.ZONE_POSITION])
                 elif card_type == "WEAPON":
@@ -76,30 +75,31 @@ class GameReader:
         hand.sort(key=lambda card: card.cost)
         return hand
     
+    def get_current_board(self):
+        minions = []
+        weapons = []
+        for board_card in self.game.in_zone(1):
+            id = board_card.card_id
+            if type(board_card) == Card and id and "HERO" not in id:
+                card_info = self.get_card_info(id)
+                card_type = card_info['type']
+                if card_info and card_type != "HERO_POWER":
+                    if card_type == 'WEAPON':
+                        weapons.append(board_card)
+                    elif card_type == 'MINION':
+                        minions.append(board_card)
+        return Board(minions, weapons)
+
     def get_current_player(self):
         return self.game.current_player
 
-    def get_current_state(self):
+    def update_state(self):
         hand = self.get_current_hand()
         turn = self.get_current_player()
         board = self.get_current_board()
         game_step = self.get_game_step()
         mana = self.get_current_mana()
         return hand, turn, board, game_step, mana
-
-    def get_current_board(self):
-        board = []
-        # Board: (Name, Position, Controller, Taunt)
-        for board_card in self.game.in_zone(1):
-            if type(board_card) != Card:
-                continue
-            id = board_card.card_id
-            if id and "HERO" not in id:
-                ID_card = self.get_card_info(id)
-                if ID_card and ID_card['type'] != "HERO_POWER":
-                    board.append()
-                    board.append((ID_card['name'], board_card.tags[GameTag.ZONE_POSITION], board_card.controller.name, board_card.tags[GameTag.TAUNT]))
-        return board
 
     def get_current_mana(self):
         players = self.game.players
@@ -131,7 +131,7 @@ class HearthstoneAI:
         def dfs(hand, mana, idx, value, to_play):
             if mana >= 0:
                 if value > max_value:
-                    res = to_play
+                    chain = to_play
             for i in range(idx, len(hand)):
                 to_play.append(i)
                 cost = mana - hand[i].cost
@@ -143,18 +143,20 @@ class HearthstoneAI:
             return
 
         max_value = 0
-        res = []
+        chain = None
         dfs(hand, mana, 0, 0, [])
-        return res
+        return chain
 
     @staticmethod
     # Kill taunts if they exist, then go face
+    # board variable of type Board
     def simple_smorc(board):
 
 
             
     @staticmethod
     # Kills taunts efficiently by taking value trades and minimizing overkill    
+    # board variable of type Board
     def smarter_smorc(board):
 
 
@@ -279,7 +281,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
         AI = HearthstoneAI()
         game_reader = GameReader()
 
-        hand, turn, board, game_step, mana = game_reader.get_current_state()
+        hand, turn, board, game_step, mana = game_reader.update_state()
         if game_step == Step.BEGIN_MULLIGAN:
             # Mulligan step
             time.sleep(4)
@@ -291,15 +293,23 @@ class SerpentHearthstoneGameAgent(GameAgent):
             self.start_game(mouse)
         elif turn:
             # Turn logic
-            handsize = len(hand)
-            time.sleep(4)
-            for card in hand:
-                self.play_card(mouse, handsize, card[1])
-                hand, board, turn, game_step, mana = game_reader.get_current_state()
-                handsize = len(hand)
-            time.sleep(4)
-            self.end_turn(mouse)
-            time.sleep(4)
+            # handsize = len(hand)
+            # time.sleep(4)
+            # for card in hand:
+            #     self.play_card(mouse, handsize, card[1])
+            #     hand, board, turn, game_step, mana = game_reader.get_current_state()
+            #     handsize = len(hand)
+            # time.sleep(4)
+            # self.end_turn(mouse)
+            # time.sleep(4)
+            chain = HearthstoneAI.play_card(hand, mana)
+            while chain:
+                # 1. Calculate best chain of cards to play using HearthstoneAI.play_cards
+                # 2. Play first card and wait in case of drawing card
+                # 3. Repeat steps 1-2
+                self.play_card(mouse, hand.size, cards_to_play[0])
+                chain = HearthstoneAI.play_card(hand, mana)
+
         print(hand)
         print(turn)
         print(board)

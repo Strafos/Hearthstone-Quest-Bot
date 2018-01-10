@@ -52,6 +52,8 @@ class BoardMinion(BaseBoardCard):
         self.attack = attack
         self.health = health
 
+# class BoardEnchantments(BaseBoardCard):
+
 class Board:
     def __init__(board_minions, weapons=None):
         self.friendly_minions, self.enemy_minions = self.divide_minions(board_minions)
