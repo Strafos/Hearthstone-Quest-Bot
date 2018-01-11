@@ -24,15 +24,17 @@ class HandMinion(BaseHandCard):
 class HandSpell(BaseHandCard):
     def __init__(self, name, id, cost, position):
         super().__init__(id, name, cost, position)
+        self.value = self.cost
 
 class HandWeapon(BaseHandCard):
     def __init__(self, name, id, cost, position, attack, durability):
         super().__init__(id, name, cost, position)
         self.attack = attack
         self.durability = durability
+        self.value = self.attack * self.durability
 
 class Hand:
-    def __init__():
+    def __init__(self):
         self.hand = []
         self.size = 0
 
@@ -56,7 +58,7 @@ class BoardMinion(BaseBoardCard):
 # class BoardEnchantments(BaseBoardCard):
 
 class Board:
-    def __init__(board_minions, weapons=None):
+    def __init__(self, board_minions, weapons=None):
         self.friendly_minions, self.enemy_minions = self.divide_minions(board_minions)
         self.weapon = self.find_friendly_weapon(weapons)
     
