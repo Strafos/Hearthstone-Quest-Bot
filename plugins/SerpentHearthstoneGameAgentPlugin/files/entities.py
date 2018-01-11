@@ -16,9 +16,10 @@ class HandMinion(BaseHandCard):
     
     def calc_value(self):
         value = self.attack*1.1 + self.health # + 1 To weight playing more cards
-        for mechanic in ["TAUNT", "BATTLECRY", "DEATHRATTLE", "CHARGE"]:
-            if mechanic in self.mechanics:
-                value += 1
+        if self.mechanics:
+            for mechanic in ["TAUNT", "BATTLECRY", "DEATHRATTLE", "CHARGE"]:
+                if mechanic in self.mechanics:
+                    value += 1
 
 class HandSpell(BaseHandCard):
     def __init__(self, name, id, cost, position):
@@ -40,7 +41,7 @@ class Hand:
         self.size += 1
 
 class BaseBoardCard:
-    def __init__(self, name, id, position, controller)
+    def __init__(self, name, id, position, controller):
         self.name = name
         self.id = id
         self.position = position

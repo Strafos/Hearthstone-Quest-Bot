@@ -12,9 +12,6 @@ import io
 import time
 
 # TODO remove Log folder
-# Necessary?
-# class GameState:
-#     def __init__(self, player, hand, board):
 
 # Reads information from game logs using hslog and relays to the GameAgent
 class GameReader:
@@ -59,19 +56,16 @@ class GameReader:
             if id:
                 card_info = self.get_card_info(id)
                 card_type = ID_card['type']
-                card = None
                 if card_type == "MINION":
                     try:
                         mechanics = card_info['mechanics']
                     except:
                         mechanics = None
-                    card = HandMinion(card_info['name'], id, card_info['cost'], card_in_hand.tags[GameTag.ZONE_POSITION], card_info['attack'], card_info['health'], mechanics)
+                    hand.append(HandMinion(card_info['name'], id, card_info['cost'], card_in_hand.tags[GameTag.ZONE_POSITION], card_info['attack'], card_info['health'], mechanics))
                 elif card_type == "SPELL":
-                    card = HandSpell(card_info['name'], id, card_info['cost'], card_in_hand.tags[GameTag.ZONE_POSITION])
+                    hand.append(HandSpell(card_info['name'], id, card_info['cost'], card_in_hand.tags[GameTag.ZONE_POSITION]))
                 elif card_type == "WEAPON":
-                    card = HandWeapon(card['name'], id, card_info['cost'], card_in_hand.tags[GameTag.ZONE_POSITION], card_info['attack'], card_info['durability'])
-                if card:
-                    hand.append(card)
+                    hand.append(HandWeapon(card['name'], id, card_info['cost'], card_in_hand.tags[GameTag.ZONE_POSITION], card_info['attack'], card_info['durability']))
         hand.sort(key=lambda card: card.cost)
         return hand
     
@@ -153,7 +147,7 @@ class HearthstoneAI:
     # Kill taunts if they exist, then go face
     # board variable of type Board
     def simple_smorc(board):
-
+        
 
             
     @staticmethod
@@ -294,6 +288,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
             # Start new game
             self.start_game(mouse)
         elif turn:
+            ## CARD PLAY PHASE
             chain = HearthstoneAI.play_card(hand, mana)
             time.sleep(4)
             while chain:
@@ -301,6 +296,15 @@ class SerpentHearthstoneGameAgent(GameAgent):
                 # 2. Play first card and wait in case of drawing card
                 # 3. Repeat steps 1-2
                 self.play_card(mouse, hand.size, cards_to_play[0])
-                hand, turn, board, game_step, mana = game_reader.update_state()
+                time.sleep(3)
+                # hand, turn, board, game_step, mana = game_reader.update_state()
+                hand = game_reader.get_current_hand()
+                mana = game_reader.get_current_mana()
                 chain = HearthstoneAI.play_card(hand, mana)
+            
+            ## ATTACK PHASE
+            # Attacking strategy:
+            # 1. Calculate chain of attack actions
+            # 2. Execute first attack action and wait (in case of deathrattle summons)
+            # 3. Repeat steps 1-2 until no minions can attack anymore
             self.end_turn(mouse)
