@@ -48,7 +48,7 @@ class GameReader:
 
     # Return Hand of BaseCard objects sorted by increasing cost
     def get_current_hand(self):
-        hand = []
+        hand = entities.Hand()
         for card_in_hand in self.game.in_zone(3):
             id = card_in_hand.card_id
             if id:
@@ -59,12 +59,12 @@ class GameReader:
                         mechanics = card_info['mechanics']
                     except:
                         mechanics = None
-                    hand.append(entities.HandMinion(card_info['name'], id, card_info['cost'], card_in_hand.tags[GameTag.ZONE_POSITION], card_info['attack'], card_info['health'], mechanics))
+                    hand.add_card(entities.HandMinion(card_info['name'], id, card_info['cost'], card_in_hand.tags[GameTag.ZONE_POSITION], card_info['attack'], card_info['health'], mechanics))
                 elif card_type == "SPELL":
-                    hand.append(entities.HandSpell(card_info['name'], id, card_info['cost'], card_in_hand.tags[GameTag.ZONE_POSITION]))
+                    hand.add_card(entities.HandSpell(card_info['name'], id, card_info['cost'], card_in_hand.tags[GameTag.ZONE_POSITION]))
                 elif card_type == "WEAPON":
-                    hand.append(entities.HandWeapon(card_info['name'], id, card_info['cost'], card_in_hand.tags[GameTag.ZONE_POSITION], card_info['attack'], card_info['durability']))
-        hand.sort(key=lambda card: card.cost)
+                    hand.add_card(entities.HandWeapon(card_info['name'], id, card_info['cost'], card_in_hand.tags[GameTag.ZONE_POSITION], card_info['attack'], card_info['durability']))
+        hand.sort_by_cost()
         return hand
     
     def get_current_board(self):
@@ -99,6 +99,7 @@ class GameReader:
         for player in players:
             if player.name in self.player_names:
                 friendly_player = player
+        # return friendly_player.tags[GameTag.RESOURCES]
         try:
             return friendly_player.tags[GameTag.RESOURCES]
         except:

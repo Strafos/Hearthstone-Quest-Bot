@@ -43,6 +43,13 @@ class Hand:
     def add_card(self, card):
         self.hand.append(card)
         self.size += 1
+    
+    def sort_by_cost(self):
+        for i in self.hand:
+            print(i.name)
+        self.hand.sort(key=lambda card: card.cost)
+        for i in self.hand:
+            print(i.name)
 
 class BaseBoardCard:
     def __init__(self, name, id, position, controller):
