@@ -11,7 +11,7 @@ from io import StringIO
 
 import entities
 from hearthstone_AI import HearthstoneAI
-import game_reader
+import GameReader
 
 
 # TODO remove Log folder
@@ -128,7 +128,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
 
     def setup_play(self):
         mouse = InputController(game = self.game)
-        # return
+        return
         self.handle_start_menu(mouse, "PLAY")
         self.handle_deck_select(mouse, 13)
 
@@ -140,10 +140,10 @@ class SerpentHearthstoneGameAgent(GameAgent):
         hand, turn, board, game_step, mana = game_reader.update_state()
         if game_step == Step.BEGIN_MULLIGAN:
             # Mulligan step
-            # time.sleep(4)
+            time.sleep(4)
             mull = HearthstoneAI.get_mulligan(hand)
             self.mull_card(mouse, hand, mull)
-            # time.sleep(4)
+            time.sleep(4)
         elif game_step == Step.FINAL_GAMEOVER:
             # Start new game
             self.start_game(mouse)
@@ -160,7 +160,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
                 # hand, turn, board, game_step, mana = game_reader.update_state()
                 hand = game_reader.get_current_hand()
                 mana = game_reader.get_current_mana()
-                chain = HearthstoneAI.play_card(hand, mana)
+                chain, val = HearthstoneAI.play_card(hand, mana)
             
             ## ATTACK PHASE
             # Attacking strategy:

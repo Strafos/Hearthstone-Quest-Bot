@@ -6,6 +6,7 @@ from hearthstone.entities import Player, Card
 import json
 import io 
 
+import entities
 # from board_state import DATA
 
 # Reads information from game logs using hslog and relays to the GameAgent
@@ -70,15 +71,16 @@ class GameReader:
         minions = []
         weapons = []
         for board_card in self.game.in_zone(1):
-            id = board_card.card_id
-            if type(board_card) == Card and id and "HERO" not in id:
-                card_info = self.get_card_info(id)
-                card_type = card_info['type']
-                if card_info and card_type != "HERO_POWER":
-                    if card_type == 'WEAPON':
-                        weapons.append(board_card)
-                    elif card_type == 'MINION':
-                        minions.append(board_card)
+            if type(board_card) == Card:
+                id = board_card.card_id
+                if id and "HERO" not in id:
+                    card_info = self.get_card_info(id)
+                    card_type = card_info['type']
+                    if card_info and card_type != "HERO_POWER":
+                        if card_type == 'WEAPON':
+                            weapons.append(board_card)
+                        elif card_type == 'MINION':
+                            minions.append(board_card)
         return entities.Board(minions, weapons)
 
     def get_current_player(self):

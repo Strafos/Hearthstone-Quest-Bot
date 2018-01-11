@@ -18,14 +18,17 @@ class HearthstoneAI:
         # TODO how does Corridor Creeper work?
         # Precondition: Hand sorted by increasing cost
         def dfs(hand, mana, idx, max_value, value, to_play):
-            if mana >= 0:
-                if value > max_value:
-                    chain = to_play
-                    max_value = value
+            if mana >= 0 and value > max_value:
+                chain = to_play
+                max_value = value
             for i in range(idx, len(hand)):
                 to_play.append(i)
                 cost = mana - hand[i].cost
                 if cost >= 0:
+                    print(hand)
+                    print(hand[i].name)
+                    print(hand[i].value)
+                    print(value + hand[i].value)
                     chain, val = dfs(hand, cost, i+1, max_value, value + hand[i].value, to_play)
                 else:
                     break
@@ -33,6 +36,7 @@ class HearthstoneAI:
             return chain, max_value
 
         chain, val = dfs(hand, mana, 0, 0, 0, [])
+        print(chain)
         return chain
 
     @staticmethod

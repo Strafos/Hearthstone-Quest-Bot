@@ -11,6 +11,7 @@ class HandMinion(BaseHandCard):
         self.attack = attack
         self.health = health
         self.mechanics = mechanics
+        self.position = position
         self.value = self.calc_value()
         # race? (elemental, pirate, murloc)
     
@@ -20,6 +21,7 @@ class HandMinion(BaseHandCard):
             for mechanic in ["TAUNT", "BATTLECRY", "DEATHRATTLE", "CHARGE"]:
                 if mechanic in self.mechanics:
                     value += 1
+        return value
 
 class HandSpell(BaseHandCard):
     def __init__(self, name, id, cost, position):
