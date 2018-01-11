@@ -6,7 +6,7 @@ from hearthstone.entities import Player, Card
 import json
 import io 
 
-from board_state import DATA
+# from board_state import DATA
 
 # Reads information from game logs using hslog and relays to the GameAgent
 class GameReader:
