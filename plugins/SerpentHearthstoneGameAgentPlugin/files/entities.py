@@ -3,7 +3,7 @@ class BaseHandCard:
         self.id = id
         self.cost = cost
         self.name = name
-        self.positon = position
+        self.position = position
 
 class HandMinion(BaseHandCard):
     def __init__(self, name, id, cost, position, attack, health, mechanics=None):
@@ -11,7 +11,6 @@ class HandMinion(BaseHandCard):
         self.attack = attack
         self.health = health
         self.mechanics = mechanics
-        self.position = position
         self.value = self.calc_value()
         # race? (elemental, pirate, murloc)
     
@@ -25,12 +24,13 @@ class HandMinion(BaseHandCard):
 
 class HandSpell(BaseHandCard):
     def __init__(self, name, id, cost, position):
-        super().__init__(id, name, cost, position)
+        # print(position)
+        super().__init__(name, id, cost, position)
         self.value = self.cost
 
 class HandWeapon(BaseHandCard):
     def __init__(self, name, id, cost, position, attack, durability):
-        super().__init__(id, name, cost, position)
+        super().__init__(name, id, cost, position)
         self.attack = attack
         self.durability = durability
         self.value = self.attack * self.durability
@@ -45,11 +45,11 @@ class Hand:
         self.size += 1
     
     def sort_by_cost(self):
-        for i in self.hand:
-            print(i.name)
+        # for i in self.hand:
+        #     print(i.name)
         self.hand.sort(key=lambda card: card.cost)
-        for i in self.hand:
-            print(i.name)
+        # for i in self.hand:
+        #     print(i.name)
 
 class BaseBoardCard:
     def __init__(self, name, id, position, controller):

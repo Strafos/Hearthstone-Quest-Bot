@@ -98,9 +98,9 @@ class GameReader:
         players = self.game.players
         for player in players:
             if player.name in self.player_names:
-                friendly_player = player
-        # return friendly_player.tags[GameTag.RESOURCES]
-        try:
-            return friendly_player.tags[GameTag.RESOURCES]
-        except:
-            return 0
+                self.friendly_player = player
+        return self.friendly_player.tags[GameTag.RESOURCES]
+        # try:
+        #     return friendly_player.tags[GameTag.RESOURCES]
+        # except:
+        #     return 0
