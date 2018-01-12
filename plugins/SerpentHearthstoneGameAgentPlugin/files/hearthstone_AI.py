@@ -61,7 +61,7 @@ class HearthstoneAI:
     # board variable of type Board
     def simple_smorc(board):
         for enemy in board.enemy_minions:
-            if enemy
+            pass
             
     @staticmethod
     # Kills taunts efficiently by taking value trades and minimizing overkill    

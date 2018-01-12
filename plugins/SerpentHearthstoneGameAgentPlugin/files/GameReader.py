@@ -7,22 +7,21 @@ import json
 import io 
 
 import entities
-# from board_state import DATA
+from board_state import DATA
 
 # Reads information from game logs using hslog and relays to the GameAgent
 class GameReader:
 
     def __init__(self, os):
         self.os = os
-        if os == "Windows":
+        parser = LogParser()
+        if self.os == "Windows":
             log_dir = r"C:\Program Files (x86)\Hearthstone\Logs\Power.log"
             with io.open(log_dir, "r", encoding='utf8') as logs:
                 lines = logs.readlines()
                 self.logs = ''.join(lines)
-            parser = LogParser()
             parser.read(io.StringIO(self.logs))
-        elif os == "Linux"
-            parser = LogParser()
+        elif self.os == "Linux":
             parser.read(io.StringIO(DATA))
         parser.flush()
 
@@ -34,9 +33,9 @@ class GameReader:
 
     def get_card_data(self):
         if self.os == "Windows":
-            json_dir = "/home/zaibo/code/Hearthstone-Quest-Bot/plugins/SerpentHearthstoneGameAgentPlugin/files/cards.json"
-        elif self.os == "Linux":
             json_dir = r"C:\Users\Zaibo\Desktop\playground\sai\plugins\SerpentHearthstoneGameAgentPlugin\files\cards.json"
+        elif self.os == "Linux":
+            json_dir = "/home/zaibo/code/Hearthstone-Quest-Bot/plugins/SerpentHearthstoneGameAgentPlugin/files/cards.json"
         else:
             raise Exception("Invalid OS")
         with io.open(json_dir, 'r', encoding='utf8') as json_file:
@@ -86,6 +85,7 @@ class GameReader:
                     card_type = card_info['type']
                     if card_info and card_type != "HERO_POWER":
                         if card_type == 'WEAPON':
+                            # weapon = entities.BoardWeapon(card_info['name'], id, board_card[GameTag.ZONE_POSITION], board_card.controller, board_card.tags[GameTag.ATK], board_card.tags[GameTag.HEALTH])
                             weapons.append(board_card)
                         elif card_type == 'MINION':
                             minions.append(board_card)
@@ -94,16 +94,17 @@ class GameReader:
     def get_current_player(self):
         return self.game.current_player
 
+    ## Update Game object by rereading logs
     def update_state(self):
-        ## Update Game object by rereading logs
-        log_dir = r"C:\Program Files (x86)\Hearthstone\Logs\Power.log"
-        with io.open(log_dir, "r", encoding='utf8') as logs:
-            lines = logs.readlines()
-            self.logs = ''.join(lines)
         parser = LogParser()
-
-        parser.read(io.StringIO(self.logs))
-        # parser.read(io.StringIO(DATA))
+        if self.os == "Windows":
+            log_dir = r"C:\Program Files (x86)\Hearthstone\Logs\Power.log"
+            with io.open(log_dir, "r", encoding='utf8') as logs:
+                lines = logs.readlines()
+                self.logs = ''.join(lines)
+            parser.read(io.StringIO(self.logs))
+        elif self.os == "Linux":
+            parser.read(io.StringIO(DATA))
         parser.flush()
 
         packet_tree = parser.games[-1]

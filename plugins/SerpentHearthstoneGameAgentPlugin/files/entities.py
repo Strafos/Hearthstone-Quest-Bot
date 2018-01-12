@@ -64,6 +64,12 @@ class BoardMinion(BaseBoardCard):
         self.attack = attack
         self.health = health
 
+class BoardWeapon(BaseBoardCard):
+    def __init__(self, name, id, position, controller, attack, durability):
+        super().__init__(name, id, position, controller)
+        self.attack = attack
+        self.durability = durability
+
 # class BoardEnchantments(BaseBoardCard):
 
 class Board:
@@ -75,8 +81,8 @@ class Board:
         friendly_minions = []
         enemy_minions = []
         for minion in board_minions:
-            if minion.controller == 'strafos' or minion.controller == 'Strafos':
-                friendly_minions.append(minion)
+            if minion.controller.name == 'strafos' or minion.controller.name == 'Strafos':
+                friendly_minions.append(board_minion)
             else:
                 enemy_minions.append(minion)
         return friendly_minions, enemy_minions
@@ -84,7 +90,7 @@ class Board:
     def find_friendly_weapon(self, weapons):
         if weapons:
             for weapon in weapons:
-                if weapon.controller == 'strafos' or weapon.controller == 'Strafos':
+                if weapon.controller.name == 'strafos' or weapon.controller.name == 'Strafos':
                     return weapon
         return None
 

@@ -135,7 +135,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
     def handle_play(self, game_frame):
         mouse = InputController(game = self.game)
         AI = HearthstoneAI()
-        game_reader = GameReader.GameReader()
+        game_reader = GameReader.GameReader("Windows")
 
         hand, turn, board, game_step, mana = game_reader.update_state()
         if game_step == Step.BEGIN_MULLIGAN:
