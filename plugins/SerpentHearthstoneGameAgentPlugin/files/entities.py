@@ -26,7 +26,7 @@ class HandSpell(BaseHandCard):
     def __init__(self, name, id, cost, position):
         # print(position)
         super().__init__(name, id, cost, position)
-        self.value = self.cost
+        self.value = self.cost + .5
 
 class HandWeapon(BaseHandCard):
     def __init__(self, name, id, cost, position, attack, durability):
