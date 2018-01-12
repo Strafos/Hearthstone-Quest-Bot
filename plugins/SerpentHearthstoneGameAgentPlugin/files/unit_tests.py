@@ -58,16 +58,7 @@ def test_simple_smorcAI():
     game_reader = GameReader.GameReader("Windows")
 
     hand, turn, board, game_step, mana = game_reader.update_state()
-    # for i in dir(card):
-    #     print(i)
-    for card in board.friendly_minions:
-        # for i in card.tags:
-        #     print(i)
-        # for i in card.card.tags:
-        #     print(i)
-        print(card.card.tags[GameTag.JUST_PLAYED])
-        print(card.card.tags[GameTag.NUM_ATTACKS_THIS_TURN])
-        print(card.card.tags[GameTag.EXTRA_ATTACKS_THIS_TURN])
-        print(card.card.tags[GameTag.EXHAUSTED])
+    print(AI.simple_smorc(board))
+    
 
 test_simple_smorcAI()
