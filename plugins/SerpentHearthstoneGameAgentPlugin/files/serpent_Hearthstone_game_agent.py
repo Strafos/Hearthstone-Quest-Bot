@@ -155,13 +155,10 @@ class SerpentHearthstoneGameAgent(GameAgent):
                 # 1. Calculate best chain of cards to play using HearthstoneAI.play_cards
                 # 2. Play first card and wait in case of drawing card
                 # 3. Repeat steps 1-2
-                print(chain)
-                print(hand.size)
                 self.play_card(mouse, hand.size, chain[0])
                 time.sleep(3)
-                # hand, turn, board, game_step, mana = game_reader.update_state()
-                hand = game_reader.get_current_hand()
-                mana = game_reader.get_current_mana()
+                hand, turn, board, game_step, mana = game_reader.update_state()
+                print(mana)
                 if mana == 0:
                     break
                 chain, val = HearthstoneAI.play_card(hand, mana)

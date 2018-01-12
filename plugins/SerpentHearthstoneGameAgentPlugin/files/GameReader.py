@@ -88,6 +88,21 @@ class GameReader:
         return self.game.current_player
 
     def update_state(self):
+        ## Update Game object by rereading logs
+        log_dir = r"C:\Program Files (x86)\Hearthstone\Logs\Power.log"
+        with io.open(log_dir, "r", encoding='utf8') as logs:
+            lines = logs.readlines()
+            self.logs = ''.join(lines)
+        parser = LogParser()
+
+        parser.read(io.StringIO(self.logs))
+        # parser.read(io.StringIO(DATA))
+        parser.flush()
+
+        packet_tree = parser.games[-1]
+        self.game = EntityTreeExporter(packet_tree).export().game
+        self.friendly_player = self.get_friendly()
+
         hand = self.get_current_hand()
         turn = self.get_current_player()
         board = self.get_current_board()
@@ -105,7 +120,10 @@ class GameReader:
             used = self.friendly_player.tags[GameTag.RESOURCES_USED]
         except:
             used = 0
+        # print(self.friendly_player.tags[GameTag.RESOURCES_USED])
         try:
-            return self.friendly_player.tags[GameTag.RESOURCES] - used
+            free = self.friendly_player.tags[GameTag.RESOURCES]
         except:
             return 0
+        print(free-used)
+        return free - used

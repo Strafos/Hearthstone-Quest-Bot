@@ -26,23 +26,22 @@ elif game_step == Step.FINAL_GAMEOVER:
     # self.start_game(mouse)
     pass
 elif turn:
-    print(mana)
+    # print(mana)
     chain, val = HearthstoneAI.play_card(hand, mana)
-    print(chain)
-    print(val)
+    # print(chain)
+    # print(val)
 
-    # while chain:
-    #     print(mana)
-    #     # print(hand.size, chain[0])
-    #     # self.play_card(mouse, hand.size, chain[0])
-    #     # time.sleep(3)
-    #     print(chain)
-    #     print(val)
-    #     # hand, turn, board, game_step, mana = game_reader.update_state()
-    #     hand = game_reader.get_current_hand()
-    #     mana = game_reader.get_current_mana()
-    #     chain, val = HearthstoneAI.play_card(hand, mana)
-    #     time.sleep(3)
+    while chain:
+        # print(hand.size, chain[0])
+        # self.play_card(mouse, hand.size, chain[0])
+        # time.sleep(3)
+        print("Hand size: " + str(hand.size))
+        print("chain: " + str(chain))
+        # print(val)
+        hand, turn, board, game_step, mana = game_reader.update_state()
+        print("mana: " + str(mana))
+        chain, val = HearthstoneAI.play_card(hand, mana)
+        time.sleep(3)
     
     ## ATTACK PHASE
     # Attacking strategy:
