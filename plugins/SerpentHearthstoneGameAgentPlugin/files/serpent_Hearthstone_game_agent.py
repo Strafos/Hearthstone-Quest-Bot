@@ -83,7 +83,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
             [(0, 0), (252, 214), (370, 214), (480, 220), (585, 220)]
         ]
 
-        if len(hand) == 3:
+        if hand.size == 3:
             hand_loc = card_location[0]
         else:
             hand_loc = card_location[1]
@@ -138,6 +138,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
         game_reader = GameReader.GameReader("Windows")
 
         hand, turn, board, game_step, mana = game_reader.update_state()
+        print(game_step)
         if game_step == Step.BEGIN_MULLIGAN:
             # Mulligan step
             time.sleep(4)
@@ -150,7 +151,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
         elif turn:
             ## CARD PLAY PHASE
             chain, val= HearthstoneAI.play_card(hand, mana)
-            time.sleep(4)
+            time.sleep(5)
             while chain:
                 # 1. Calculate best chain of cards to play using HearthstoneAI.play_cards
                 # 2. Play first card and wait in case of drawing card
@@ -158,7 +159,6 @@ class SerpentHearthstoneGameAgent(GameAgent):
                 self.play_card(mouse, hand.size, chain[0])
                 time.sleep(3)
                 hand, turn, board, game_step, mana = game_reader.update_state()
-                print(mana)
                 if mana == 0:
                     break
                 chain, val = HearthstoneAI.play_card(hand, mana)
@@ -169,3 +169,4 @@ class SerpentHearthstoneGameAgent(GameAgent):
             # 2. Execute first attack action and wait (in case of deathrattle summons)
             # 3. Repeat steps 1-2 until no minions can attack anymore
             self.end_turn(mouse)
+            time.sleep(2)

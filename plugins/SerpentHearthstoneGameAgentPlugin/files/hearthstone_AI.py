@@ -46,8 +46,8 @@ class HearthstoneAI:
             tot_cost = 0
             for elem in temp_chain[1:]:
                 tot_cost += elem[1]
-            if tot_cost == 1:
-                # Don't use coin if 1 mana play
+            if tot_cost == mana:
+                # Don't use coin if not needed for play
                 del temp_chain[0]
         
         chain = []
