@@ -27,6 +27,7 @@ class GameReader:
         self.game = EntityTreeExporter(packet_tree).export().game
         self.player_names = ['Strafos', 'strafos']
         self.card_data = self.get_card_data()
+        self.friendly_player = self.get_friendly()
 
     def get_card_data(self):
         json_dir = "/home/zaibo/code/Hearthstone-Quest-Bot/plugins/SerpentHearthstoneGameAgent/files/cards.json"
@@ -94,13 +95,17 @@ class GameReader:
         mana = self.get_current_mana()
         return hand, turn, board, game_step, mana
 
-    def get_current_mana(self):
-        players = self.game.players
-        for player in players:
+    def get_friendly(self):
+        for player in self.game.players:
             if player.name in self.player_names:
-                self.friendly_player = player
-        return self.friendly_player.tags[GameTag.RESOURCES]
-        # try:
-        #     return friendly_player.tags[GameTag.RESOURCES]
-        # except:
-        #     return 0
+                return player
+
+    def get_current_mana(self):
+        try:
+            used = self.friendly_player.tags[GameTag.RESOURCES_USED]
+        except:
+            used = 0
+        try:
+            return self.friendly_player.tags[GameTag.RESOURCES] - used
+        except:
+            return 0

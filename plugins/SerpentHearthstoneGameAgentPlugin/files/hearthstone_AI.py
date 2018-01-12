@@ -22,12 +22,14 @@ class HearthstoneAI:
                 chain = to_play[:]
                 max_value = value
             for i in range(idx, hand.size):
-                to_play.append(hand.hand[i].name)
-                # to_play.append(hand.hand[i].position)
-                cost = mana - hand.hand[i].cost
+                if hand.hand[i].name == "The Coin":
+                    remaining_mana = mana + 1
+                else:
+                    remaining_mana = mana - hand.hand[i].cost
+                to_play.append((hand.hand[i].position, hand.hand[i].cost))
                 value += hand.hand[i].value
-                if cost >= 0:
-                    temp_chain, temp_max_value = dfs(hand, cost, i+1, max_value, value, to_play)
+                if remaining_mana >= 0:
+                    temp_chain, temp_max_value = dfs(hand, remaining_mana, i+1, max_value, value, to_play)
                     if temp_max_value > max_value:
                         chain = temp_chain
                         max_value = temp_max_value
@@ -39,7 +41,19 @@ class HearthstoneAI:
                 to_play.pop()
             return chain, max_value
 
-        chain, val = dfs(hand, mana, 0, 0, 0, [])
+        temp_chain, val = dfs(hand, mana, 0, 0, 0, [])
+        if len(temp_chain) > 1:
+            tot_cost = 0
+            for elem in temp_chain[1:]:
+                tot_cost += elem[1]
+            if tot_cost == 1:
+                # Don't use coin if 1 mana play
+                del temp_chain[0]
+        
+        chain = []
+        for elem in temp_chain:
+            chain.append(elem[0])
+
         return chain, val
 
     @staticmethod

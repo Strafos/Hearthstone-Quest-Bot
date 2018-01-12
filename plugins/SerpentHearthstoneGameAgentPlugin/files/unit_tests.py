@@ -19,22 +19,17 @@ hand, turn, board, game_step, mana = game_reader.update_state()
 if game_step == Step.BEGIN_MULLIGAN:
     # Mulligan step
     # time.sleep(4)
-    mull = HearthstoneAI.get_mulligan(hand)
+    mull = HearthstoneAI.get_mulligan(hand.hand)
     # time.sleep(4)
 elif game_step == Step.FINAL_GAMEOVER:
     # Start new game
     # self.start_game(mouse)
     pass
 elif turn:
-    game = game_reader.get_game()
-    me = game_reader.friendly_player
-    for i in dir(me):
-        print(i)
-
-    # print(mana)
-    # chain, val = HearthstoneAI.play_card(hand, mana)
-    # print(chain)
-    # print(val)
+    print(mana)
+    chain, val = HearthstoneAI.play_card(hand, mana)
+    print(chain)
+    print(val)
 
     # while chain:
     #     print(mana)

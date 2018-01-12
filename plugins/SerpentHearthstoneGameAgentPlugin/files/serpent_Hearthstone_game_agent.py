@@ -141,7 +141,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
         if game_step == Step.BEGIN_MULLIGAN:
             # Mulligan step
             time.sleep(4)
-            mull = HearthstoneAI.get_mulligan(hand)
+            mull = HearthstoneAI.get_mulligan(hand.hand)
             self.mull_card(mouse, hand, mull)
             time.sleep(4)
         elif game_step == Step.FINAL_GAMEOVER:
@@ -149,17 +149,21 @@ class SerpentHearthstoneGameAgent(GameAgent):
             self.start_game(mouse)
         elif turn:
             ## CARD PLAY PHASE
-            chain = HearthstoneAI.play_card(hand, mana)
+            chain, val= HearthstoneAI.play_card(hand, mana)
             time.sleep(4)
             while chain:
                 # 1. Calculate best chain of cards to play using HearthstoneAI.play_cards
                 # 2. Play first card and wait in case of drawing card
                 # 3. Repeat steps 1-2
+                print(chain)
+                print(hand.size)
                 self.play_card(mouse, hand.size, chain[0])
                 time.sleep(3)
                 # hand, turn, board, game_step, mana = game_reader.update_state()
                 hand = game_reader.get_current_hand()
                 mana = game_reader.get_current_mana()
+                if mana == 0:
+                    break
                 chain, val = HearthstoneAI.play_card(hand, mana)
             
             ## ATTACK PHASE
