@@ -152,7 +152,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
             ## CARD PLAY PHASE
             chain, val= HearthstoneAI.play_card(hand, mana)
             time.sleep(5)
-            while chain:
+            while chain and turn:
                 # 1. Calculate best chain of cards to play using HearthstoneAI.play_cards
                 # 2. Play first card and wait in case of drawing card
                 # 3. Repeat steps 1-2

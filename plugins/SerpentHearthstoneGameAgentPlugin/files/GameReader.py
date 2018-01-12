@@ -66,11 +66,11 @@ class GameReader:
                         mechanics = card_info['mechanics']
                     except:
                         mechanics = None
-                    hand.add_card(entities.HandMinion(card_info['name'], id, card_info['cost'], card_in_hand.tags[GameTag.ZONE_POSITION], card_info['attack'], card_info['health'], mechanics))
+                    hand.add_card(entities.HandMinion(card_info['name'], id, card_in_hand.tags[GameTag.COST], card_in_hand.tags[GameTag.ZONE_POSITION], card_info['attack'], card_info['health'], mechanics))
                 elif card_type == "SPELL":
-                    hand.add_card(entities.HandSpell(card_info['name'], id, card_info['cost'], card_in_hand.tags[GameTag.ZONE_POSITION]))
+                    hand.add_card(entities.HandSpell(card_info['name'], id, card_in_hand.tags[GameTag.COST], card_in_hand.tags[GameTag.ZONE_POSITION]))
                 elif card_type == "WEAPON":
-                    hand.add_card(entities.HandWeapon(card_info['name'], id, card_info['cost'], card_in_hand.tags[GameTag.ZONE_POSITION], card_info['attack'], card_info['durability']))
+                    hand.add_card(entities.HandWeapon(card_info['name'], id, card_in_hand.tags[GameTag.COST], card_in_hand.tags[GameTag.ZONE_POSITION], card_info['attack'], card_info['durability']))
         hand.sort_by_cost()
         return hand
     
@@ -85,10 +85,13 @@ class GameReader:
                     card_type = card_info['type']
                     if card_info and card_type != "HERO_POWER":
                         if card_type == 'WEAPON':
-                            # weapon = entities.BoardWeapon(card_info['name'], id, board_card[GameTag.ZONE_POSITION], board_card.controller, board_card.tags[GameTag.ATK], board_card.tags[GameTag.HEALTH])
-                            weapons.append(board_card)
+                            weapon = entities.BoardWeapon(card_info['name'], id, board_card.tags[GameTag.ZONE_POSITION], board_card.controller, board_card.tags[GameTag.ATK], board_card.tags[GameTag.DURABILITY])
+                            weapons.append(weapon)
+                            # weapons.append(board_card)
                         elif card_type == 'MINION':
-                            minions.append(board_card)
+                            minion = entities.BoardMinion(self, card_info['name'], id, board_card.tags[GameTag.ZONE_POSITION], board_card.controller, board_card.tags[GameTag.ATK], board_card.tags[GameTag.HEALTH], board_card.tags[GameTag.TAUNT])
+                            minions.append(minion)
+                            # minions.append(board_card)
         return entities.Board(minions, weapons)
 
     def get_current_player(self):
