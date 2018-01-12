@@ -120,10 +120,7 @@ class GameReader:
             used = self.friendly_player.tags[GameTag.RESOURCES_USED]
         except:
             used = 0
-        # print(self.friendly_player.tags[GameTag.RESOURCES_USED])
         try:
-            free = self.friendly_player.tags[GameTag.RESOURCES]
+            return self.friendly_player.tags[GameTag.RESOURCES] - used
         except:
             return 0
-        print(free-used)
-        return free - used
