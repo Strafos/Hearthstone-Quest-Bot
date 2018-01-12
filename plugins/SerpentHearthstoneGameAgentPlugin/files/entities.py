@@ -59,11 +59,12 @@ class BaseBoardCard:
         self.controller = controller
 
 class BoardMinion(BaseBoardCard):
-    def __init__(self, name, id, position, controller, attack, health, taunt, card):
+    def __init__(self, name, id, position, controller, attack, health, taunt, exhausted, card):
         super().__init__(name, id, position, controller)
         self.attack = attack
         self.health = health
         self.taunt = taunt
+        self.exhausted = exhausted
         self.card = card
 
 class BoardWeapon(BaseBoardCard):
@@ -77,18 +78,18 @@ class BoardWeapon(BaseBoardCard):
 
 class Board:
     def __init__(self, board_minions, weapons=None):
-        self.friendly_minions, self.enemy_minions = self.divide_minions(board_minions)
+        self.ally_minions, self.enemy_minions = self.divide_minions(board_minions)
         self.weapon = self.find_friendly_weapon(weapons)
     
     def divide_minions(self, board_minions):
-        friendly_minions = []
+        ally_minions = []
         enemy_minions = []
         for minion in board_minions:
             if minion.controller.name == 'strafos' or minion.controller.name == 'Strafos':
-                friendly_minions.append(minion)
+                ally_minions.append(minion)
             else:
                 enemy_minions.append(minion)
-        return friendly_minions, enemy_minions
+        return ally_minions, enemy_minions
 
     def find_friendly_weapon(self, weapons):
         if weapons:

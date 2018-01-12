@@ -89,7 +89,7 @@ class GameReader:
                             weapons.append(weapon)
                             # weapons.append(board_card)
                         elif card_type == 'MINION':
-                            minion = entities.BoardMinion(card_info['name'], id, board_card.tags[GameTag.ZONE_POSITION], board_card.controller, board_card.tags[GameTag.ATK], board_card.tags[GameTag.HEALTH], board_card.tags[GameTag.TAUNT], board_card)
+                            minion = entities.BoardMinion(card_info['name'], id, board_card.tags[GameTag.ZONE_POSITION], board_card.controller, board_card.tags[GameTag.ATK], board_card.tags[GameTag.HEALTH], board_card.tags[GameTag.TAUNT], board_card.tags[GameTag.EXHAUSTED] board_card)
                             minions.append(minion)
                             # minions.append(board_card)
         return entities.Board(minions, weapons)
