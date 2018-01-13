@@ -70,9 +70,9 @@ class GameReader:
                     cost = self.key_error(card_in_hand.tags, GameTag.COST, 0)
                     hand.add_card(entities.HandMinion(card_info['name'], id, cost, card_in_hand.tags[GameTag.ZONE_POSITION], card_info['attack'], card_info['health'], mechanics))
                 elif card_type == "SPELL":
-                    hand.add_card(entities.HandSpell(card_info['name'], id, card_in_hand.tags[GameTag.COST], card_in_hand.tags[GameTag.ZONE_POSITION]))
+                    hand.add_card(entities.HandSpell(card_info['name'], id, card_in_hand.tags.get(GameTag.COST, 0), card_in_hand.tags[GameTag.ZONE_POSITION]))
                 elif card_type == "WEAPON":
-                    hand.add_card(entities.HandWeapon(card_info['name'], id, card_in_hand.tags[GameTag.COST], card_in_hand.tags[GameTag.ZONE_POSITION], card_info['attack'], card_info['durability']))
+                    hand.add_card(entities.HandWeapon(card_info['name'], id, card_in_hand.tags.get(GameTag.COST, 0), card_in_hand.tags[GameTag.ZONE_POSITION], card_info['attack'], card_info['durability']))
         hand.sort_by_cost()
         return hand
     
@@ -100,11 +100,10 @@ class GameReader:
                                 exhaust = board_card.tags[GameTag.EXHAUSTED]
                             except:
                                 if board_card.tags[GameTag.JUST_PLAYED] and board_card.tags[GameTag.CHARGE]:
-                                    return 1
+                                    exhaust = 1
                                 else:
-                                    return 0
-                            print(card_info['name'])
-                            minion = entities.BoardMinion(card_info['name'], id, board_card.tags[GameTag.ZONE_POSITION], board_card.controller, attack, board_card.tags[GameTag.HEALTH], taunt, board_card.tags[GameTag.EXHAUSTED], board_card)
+                                    exhaust = 0
+                            minion = entities.BoardMinion(card_info['name'], id, board_card.tags[GameTag.ZONE_POSITION], board_card.controller, attack, board_card.tags[GameTag.HEALTH], taunt, exhaust, board_card)
                             minions.append(minion)
         return entities.Board(minions, weapons)
 

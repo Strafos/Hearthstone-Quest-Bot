@@ -173,7 +173,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
         game_reader = GameReader.GameReader("Windows")
 
         hand, turn, board, game_step, mana = game_reader.update_state()
-        print(game_step)
+        # print(game_step)
         if game_step == Step.BEGIN_MULLIGAN:
             # Mulligan step
             time.sleep(4)
@@ -190,9 +190,10 @@ class SerpentHearthstoneGameAgent(GameAgent):
             # 3. Repeat steps 1-2
             chain, val= HearthstoneAI.play_card(hand, mana)
             time.sleep(5)
-            while chain and turn:
+            while chain and turn and len(board.ally_minions) != 7:
+                print(board)
                 self.play_card(mouse, hand.size, chain[0])
-                time.sleep(3)
+                time.sleep(2)
                 hand, turn, board, game_step, mana = game_reader.update_state()
                 if mana == 0:
                     break
@@ -207,7 +208,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
             chain = HearthstoneAI.simple_smorc(board)
             while chain and turn:
                 self.attack(mouse, len(board.ally_minions), len(board.enemy_minions), chain[0])
-                time.sleep(3)
+                time.sleep(2)
                 hand, turn, board, game_step, mana = game_reader.update_state()
                 chain = HearthstoneAI.simple_smorc(board)
 
