@@ -57,7 +57,8 @@ class Hand:
 
     def add_card(self, card):
         self.hand.append(card)
-        self.size += 1
+        if card.name != 'Hero Power':
+            self.size += 1
     
     def sort_by_cost(self):
         # for i in self.hand:
