@@ -77,9 +77,9 @@ class HearthstoneAI:
         for enemy in taunters:
             health = enemy.health
             while health > 0 and k < len(attackers):
-                k += 1
                 chain.append((attackers[k].position, enemy.position))
                 health -= attackers[k].attack
+                k += 1
         
         for i in range(k, len(attackers)):
             chain.append((attackers[i].position, 0))

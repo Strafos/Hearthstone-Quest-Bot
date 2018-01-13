@@ -62,11 +62,13 @@ class GameReader:
                 card_info = self.get_card_info(id)
                 card_type = card_info['type']
                 if card_type == "MINION":
-                    try:
-                        mechanics = card_info['mechanics']
-                    except:
-                        mechanics = None
-                    hand.add_card(entities.HandMinion(card_info['name'], id, card_in_hand.tags[GameTag.COST], card_in_hand.tags[GameTag.ZONE_POSITION], card_info['attack'], card_info['health'], mechanics))
+                    # try:
+                    #     mechanics = card_info['mechanics']
+                    # except:
+                    #     mechanics = None
+                    mechanics = self.key_error(card_info, 'mechanics', None)
+                    cost = self.key_error(card_in_hand.tags, GameTag.COST, 0)
+                    hand.add_card(entities.HandMinion(card_info['name'], id, cost, card_in_hand.tags[GameTag.ZONE_POSITION], card_info['attack'], card_info['health'], mechanics))
                 elif card_type == "SPELL":
                     hand.add_card(entities.HandSpell(card_info['name'], id, card_in_hand.tags[GameTag.COST], card_in_hand.tags[GameTag.ZONE_POSITION]))
                 elif card_type == "WEAPON":
@@ -87,16 +89,30 @@ class GameReader:
                         if card_type == 'WEAPON':
                             weapon = entities.BoardWeapon(card_info['name'], id, board_card.tags[GameTag.ZONE_POSITION], board_card.controller, board_card.tags[GameTag.ATK], board_card.tags[GameTag.DURABILITY], board_card)
                             weapons.append(weapon)
-                            # weapons.append(board_card)
                         elif card_type == 'MINION':
                             try:
                                 attack = board_card.tags[GameTag.ATK]
                             except:
                                 attack = 0
-                            minion = entities.BoardMinion(card_info['name'], id, board_card.tags[GameTag.ZONE_POSITION], board_card.controller, attack, board_card.tags[GameTag.HEALTH], board_card.tags[GameTag.TAUNT], board_card.tags[GameTag.EXHAUSTED], board_card)
+                            attack = self.key_error(board_card.tags, GameTag.ATK, 0)
+                            taunt = self.key_error(board_card.tags, GameTag.TAUNT, 0)
+                            try:
+                                exhaust = board_card.tags[GameTag.EXHAUSTED]
+                            except:
+                                if board_card.tags[GameTag.JUST_PLAYED] and board_card.tags[GameTag.CHARGE]:
+                                    return 1
+                                else:
+                                    return 0
+                            print(card_info['name'])
+                            minion = entities.BoardMinion(card_info['name'], id, board_card.tags[GameTag.ZONE_POSITION], board_card.controller, attack, board_card.tags[GameTag.HEALTH], taunt, board_card.tags[GameTag.EXHAUSTED], board_card)
                             minions.append(minion)
-                            # minions.append(board_card)
         return entities.Board(minions, weapons)
+
+    def key_error(self, tags, gametag, default=0):
+        try:
+            return tags[gametag]
+        except:
+            return default
 
     def get_current_player(self):
         return self.game.current_player
