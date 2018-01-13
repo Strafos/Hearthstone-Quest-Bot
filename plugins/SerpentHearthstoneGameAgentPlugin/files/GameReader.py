@@ -63,16 +63,31 @@ class GameReader:
                 card_type = card_info['type']
                 tags = card_in_hand.tags
                 if card_type == "MINION":
-                    # try:
-                    #     mechanics = card_info['mechanics']
-                    # except:
-                    #     mechanics = None
-                    # mechanics = self.key_error(card_info, 'mechanics', None)
-                    hand.add_card(entities.HandMinion(card_info['name'], id, tags.get(GameTag.COST, 0), tags.get(GameTag.ZONE_POSITION, 0), card_info['attack'], card_info['health'], card_info.get('mechanics', None)))
+                    minion = entities.HandMinion(
+                        card_info['name'], 
+                        id, 
+                        tags.get(GameTag.COST, 0), 
+                        tags.get(GameTag.ZONE_POSITION, 0), 
+                        card_info['attack'], 
+                        card_info['health'], 
+                        card_info.get('mechanics', None))
+                    hand.add_card(minion)
                 elif card_type == "SPELL":
-                    hand.add_card(entities.HandSpell(card_info['name'], id, tags.get(GameTag.COST, 0), tags.get(GameTag.ZONE_POSITION, 0)))
+                    spell = entities.HandSpell(
+                        card_info['name'], 
+                        id, 
+                        tags.get(GameTag.COST, 0), 
+                        tags.get(GameTag.ZONE_POSITION, 0))
+                    hand.add_card(spell)
                 elif card_type == "WEAPON":
-                    hand.add_card(entities.HandWeapon(card_info['name'], id, tags.get(GameTag.COST, 0), tags.get(GameTag.ZONE_POSITION, 0), card_info['attack'], card_info['durability']))
+                    weapon = entities.HandWeapon(
+                        card_info['name'], 
+                        id, 
+                        tags.get(GameTag.COST, 0), 
+                        tags.get(GameTag.ZONE_POSITION, 0), 
+                        card_info['attack'], 
+                        card_info['durability'])
+                    hand.add_card(weapon)
         hand.sort_by_cost()
         return hand
     
@@ -98,18 +113,9 @@ class GameReader:
                                 # board_card)
                             weapons.append(weapon)
                         elif card_type == 'MINION':
-                            # try:
-                            #     exhaust = board_card.tags[GameTag.EXHAUSTED]
-                            # except:
-                            #     # if tags.get(GameTag.JUST_PLAYED, 0) and tags.get(GameTag.CHARGE, 0):
-                            #     if tags.get(GameTag.CHARGE, 0):
-                            #         exhaust = 1
-                            #     else:
-                            #         exhaust = 0
                             exhaust = tags.get(GameTag.EXHAUSTED, not tags.get(GameTag.CHARGE, 0))
                             if tags.get(GameTag.FROZEN):
                                 exhaust = 1
-                            print("ex: " + str(exhaust))
                             minion = entities.BoardMinion(
                                 card_info['name'], 
                                 id, 
@@ -119,7 +125,6 @@ class GameReader:
                                 tags.get(GameTag.HEALTH, 0), 
                                 tags.get(GameTag.TAUNT, 0), 
                                 exhaust)
-                                # board_card)
                             minions.append(minion)
         return entities.Board(minions, weapons)
 
@@ -156,11 +161,4 @@ class GameReader:
                 return player
 
     def get_current_mana(self):
-        try:
-            used = self.friendly_player.tags[GameTag.RESOURCES_USED]
-        except:
-            used = 0
-        try:
-            return self.friendly_player.tags[GameTag.RESOURCES] - used
-        except:
-            return 0
+        return self.friendly_player.tags.get(GameTag.RESOURCES, 0) - self.friendly_player.tags.get(GameTag.RESOURCES_USED, 0)

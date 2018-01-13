@@ -97,8 +97,3 @@ class Board:
                 if weapon.controller.name == 'strafos' or weapon.controller.name == 'Strafos':
                     return weapon
         return None
-
-# TODO?
-class GameState:
-    def __init__():
-        pass
