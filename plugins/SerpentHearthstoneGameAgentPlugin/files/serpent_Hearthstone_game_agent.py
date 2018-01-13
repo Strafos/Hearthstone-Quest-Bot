@@ -2,7 +2,6 @@ from serpent.game_agent import GameAgent
 from serpent.input_controller import MouseButton, InputController
 
 from hearthstone.enums import GameTag, Step
-# from hearthstone.entities import Player, Card
 
 import json
 import io
@@ -10,36 +9,23 @@ import time
 from io import StringIO
 
 import entities
+import locations
 from hearthstone_AI import HearthstoneAI
 import GameReader
-
 
 # TODO remove Log folder
 
 # Preforms in-game actions using input controller
 class SerpentHearthstoneGameAgent(GameAgent):
-    X_RES = 840
-    Y_RES = 473
-
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
         self.frame_handlers["PLAY"] = self.handle_play
-
         self.frame_handler_setups["PLAY"] = self.setup_play
-
         self.analytics_client = None
 
     def handle_start_menu(self, mouse, option):
-        menu_items = {
-            "PLAY" : (422, 142),
-            "SOLO" : (419, 176),
-            "ARENA" : (421, 209),
-            "TAVERN" : (418, 247),
-            "QUESTS" : (230, 414),
-            "PACKS" : (336, 396),
-            "COLLECTION" : (453, 392)
-        }
+        menu_items = locations.menu_items
         mouse.click()
         mouse.move(menu_items[option][0], menu_items[option][1], .25)
         mouse.click()
@@ -78,10 +64,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
         mouse.click()
     
     def mull_card(self, mouse, hand, mull):
-        card_location = [
-            [(0, 0), (274, 221), (421, 220), (573, 221)],
-            [(0, 0), (252, 214), (370, 214), (480, 220), (585, 220)]
-        ]
+        card_location = locations.mulligan_locations
 
         if hand.size == 3:
             hand_loc = card_location[0]
@@ -92,33 +75,26 @@ class SerpentHearthstoneGameAgent(GameAgent):
             mouse.click()
         self.end_turn(mouse, True)
 
+    # attack_pos examples: 
+    # (5, 3)
+    # (2, 0)
     def attack(self, mouse, ally_board_size, enemy_board_size, attack_pos):
-        # attack_pos examples: 
-        # (5, 3)
-        # (2, 0)
-        card_location_x = [
-            [0],
-            [0, 416],
-            [0, 385, 443],
-            [0, 357, 416, 473],
-            [0, 320, 385, 443, 500],
-            [0, 290, 354, 411, 473, 535],
-            [0, 260, 320, 385, 443, 500, 566],
-            [0, 230, 290, 354, 411, 473, 535, 594],
-        ]
+        card_locations_x = locations.board_locations_x
         enemy_y = 170
         ally_y = 258
 
-        # Hero
+        # Friendly
         if attack_pos[0] == 0:
+            # Friendly Hero coordinates
             x1 = 416
             y1 = 357
         else:
-            x1 = card_location_x[ally_board_size][attack_pos[0]]
+            x1 = card_locations_x[ally_board_size][attack_pos[0]]
             y1 = ally_y
         mouse.move(x1, y1, .25)
         mouse.click()
 
+        # Enemy
         if attack_pos[1] == 0:
             x2 = 416
             y2 = 88
@@ -129,27 +105,14 @@ class SerpentHearthstoneGameAgent(GameAgent):
         mouse.click()
 
     def play_card(self, mouse, handsize, card_pos):
-        card_location = [
-            [(0, 0)],
-            [(0, 0), (400, 430)],
-            [(0, 0), (375, 432), (423, 435)],
-            [(0, 0), (344, 429), (405, 432), (458, 438)],
-            [(0, 0), (316, 443), (375, 432), (427, 432), (487, 437)],
-            [(0, 0), (309, 443), (353, 435), (398, 436), (442, 439), (508, 448)],
-            [(0, 0), (295, 440), (340, 439), (370, 440), (416, 438), (462, 436), (502, 439)],
-            [(0, 0), (293, 446), (323, 441), (358, 440), (396, 432), (428, 432), (467, 430), (503, 447)],
-            [(0, 0), (284, 456), (316, 444), (346, 441), (375, 437), (405, 428), (439, 435), (466, 437), (505, 448)],
-            [(0, 0), (281, 455), (309, 448), (340, 442), (365, 439), (390, 436), (419, 431), (447, 431), (471, 438), (509, 450)],
-            [(0, 0), (275, 462), (300, 455), (328, 448), (352, 444), (376, 435), (396, 434), (426, 436), (450, 437), (472, 444), (503, 446)]
-        ]
-
+        hand_card_locations = locations.hand_card_locations
         if card_pos == -1:
             self.hero_power(mouse)
 
         if card_pos == 0 or card_pos > handsize:
             return None
 
-        coords = card_location[handsize][card_pos]
+        coords = hand_card_locations[handsize][card_pos]
         mouse.move(coords[0], coords[1], .3)
         mouse.click()
         self.move_to_board(mouse)
@@ -165,7 +128,8 @@ class SerpentHearthstoneGameAgent(GameAgent):
         mouse.click()
     
     def hero_power(self, mouse):
-        mouse.move(490, 358, .25)
+        loc = locations.hero_power_loc
+        mouse.move(loc[0], loc[1], .25)
         mouse.click()
 
     def setup_play(self):

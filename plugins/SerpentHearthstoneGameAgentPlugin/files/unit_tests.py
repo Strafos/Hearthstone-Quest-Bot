@@ -90,4 +90,8 @@ def won():
         print(i)
     print(game.tags[GameTag.STATE])
 
-won()
+def log_tests():
+    f = open('Logs/test.log', 'w')
+    f.write('Wins: 20')
+    f.write('Loses: 10')
+    f.write('Total: 5')

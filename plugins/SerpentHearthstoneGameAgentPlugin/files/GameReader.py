@@ -7,11 +7,11 @@ import json
 import io 
 
 import entities
-from board_state import DATA
+# from board_state import DATA
+from endgame_data import DATA
 
 # Reads information from game logs using hslog and relays to the GameAgent
 class GameReader:
-
     def __init__(self, os):
         self.os = os
         parser = LogParser()
@@ -179,4 +179,5 @@ class GameReader:
         return friendly, enemy
 
     def get_current_mana(self):
-        return self.friendly_player.tags.get(GameTag.RESOURCES, 0) - self.friendly_player.tags.get(GameTag.RESOURCES_USED, 0)
+        tags = self.friendly_player.tags
+        return tags.get(GameTag.RESOURCES, 0) - tags.get(GameTag.RESOURCES_USED, 0)
