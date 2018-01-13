@@ -29,7 +29,7 @@ class GameReader:
         self.game = EntityTreeExporter(packet_tree).export().game
         self.player_names = ['Strafos', 'strafos']
         self.card_data = self.get_card_data()
-        self.friendly_player = self.get_friendly()
+        self.friendly_player, self.enemy_player = self.read_players()
 
     def get_card_data(self):
         if self.os == "Windows":
@@ -54,7 +54,7 @@ class GameReader:
         return self.game.tags.get(GameTag.STEP, 0)
 
     # Return Hand of BaseCard objects sorted by increasing cost
-    def get_current_hand(self):
+    def get_current_hand(self, hp, board):
         hand = entities.Hand()
         for card_in_hand in self.game.in_zone(3):
             id = card_in_hand.card_id
@@ -88,18 +88,20 @@ class GameReader:
                         card_info['attack'], 
                         card_info['durability'])
                     hand.add_card(weapon)
-        hero_power = entities.HandSpell('Hero Power', None, 2, -1,)
-        hand.add_card(hero_power)
+        if hp:
+            hero_power = entities.HeroPower('Hero Power', 2, 'Hunter', board.enemy.health)
+            hand.add_card(hero_power)
         hand.sort_by_cost()
         return hand
     
     def get_current_board(self):
         minions = []
         weapons = []
+        heroes = []
         for board_card in self.game.in_zone(1):
             if type(board_card) == Card:
                 id = board_card.card_id
-                if id and "HERO" not in id:
+                if id:
                     card_info = self.get_card_info(id)
                     card_type = card_info['type']
                     if card_info and card_type != "HERO_POWER":
@@ -112,7 +114,6 @@ class GameReader:
                                 board_card.controller, 
                                 tags.get(GameTag.ATK, 0), 
                                 tags.get(GameTag.DURABILITY, 0))
-                                # board_card)
                             weapons.append(weapon)
                         elif card_type == 'MINION':
                             exhaust = tags.get(GameTag.EXHAUSTED, not tags.get(GameTag.CHARGE, 0))
@@ -128,13 +129,22 @@ class GameReader:
                                 tags.get(GameTag.TAUNT, 0), 
                                 exhaust)
                             minions.append(minion)
-        return entities.Board(minions, weapons)
+                        elif card_type == 'HERO':
+                            hero = entities.BoardHero(
+                                card_info['name']
+                                id,
+                                None,
+                                board_card.controller,
+                                tags.get(GameTag.HEALTH, 30)
+                            )
+                            heroes.append(hero)
+        return entities.Board(minions, weapons, hero)
 
     def get_current_player(self):
         return self.game.current_player
 
     ## Update Game object by rereading logs
-    def update_state(self):
+    def update_state(self, hp):
         parser = LogParser()
         if self.os == "Windows":
             log_dir = r"C:\Program Files (x86)\Hearthstone\Logs\Power.log"
@@ -148,19 +158,22 @@ class GameReader:
 
         packet_tree = parser.games[-1]
         self.game = EntityTreeExporter(packet_tree).export().game
-        self.friendly_player = self.get_friendly()
+        self.friendly_player, self.enemy_player = self.read_players()
 
-        hand = self.get_current_hand()
         turn = self.get_current_player().name in self.player_names
         board = self.get_current_board()
+        hand = self.get_current_hand(hp, board)
         game_step = self.get_game_step()
         mana = self.get_current_mana()
         return hand, turn, board, game_step, mana
 
-    def get_friendly(self):
+    def read_players(self):
         for player in self.game.players:
             if player.name in self.player_names:
-                return player
+                friendly = player
+            else:
+                enemy = player
+        return friendly, enemy
 
     def get_current_mana(self):
         return self.friendly_player.tags.get(GameTag.RESOURCES, 0) - self.friendly_player.tags.get(GameTag.RESOURCES_USED, 0)

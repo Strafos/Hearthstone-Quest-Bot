@@ -16,10 +16,15 @@ class HandMinion(BaseHandCard):
     
     def calc_value(self):
         value = self.attack*1.1 + self.health # + 1 To weight playing more cards
-        if self.mechanics:
-            for mechanic in ["TAUNT", "BATTLECRY", "DEATHRATTLE", "CHARGE"]:
-                if mechanic in self.mechanics:
-                    value += 1
+        for mechanic in self.mechanics:
+            if mechanic == "CHARGE":
+                value += self.attack
+            else:
+                value += 1
+        # if self.mechanics:
+            # for mechanic in ["TAUNT", "BATTLECRY", "DEATHRATTLE", "CHARGE"]:
+            #     if mechanic in self.mechanics:
+            #         value += 1
         return value
 
 class HandSpell(BaseHandCard):
@@ -34,6 +39,16 @@ class HandWeapon(BaseHandCard):
         self.attack = attack
         self.durability = durability
         self.value = self.attack * self.durability
+
+class HeroPower():
+    # Hunter HP
+    def __init__(self, name, cost, hero, enemy_health):
+        self.name = name
+        self.cost = cost
+        self.value = 0
+        self.hero = hero
+        if enemy_health <= 15:
+            self.value += 1.2**(15 - enemy_health)
 
 class Hand:
     def __init__(self):
@@ -74,13 +89,27 @@ class BoardWeapon(BaseBoardCard):
         self.durability = durability
         # self.card = card
 
+class BoardHero(BaseBoardCard):
+    def __init__(self, name, id, position, controller, health):
+        super().__init__(name, id, position, controller)
+        self.health = health
+
 # class BoardEnchantments(BaseBoardCard):
 
 class Board:
-    def __init__(self, board_minions, weapons=None):
+    def __init__(self, board_minions, weapons=None, heroes):
         self.ally_minions, self.enemy_minions = self.divide_minions(board_minions)
         self.weapon = self.find_friendly_weapon(weapons)
+        self.ally, self.enemy = divide_heroes(self, heroes)
     
+    def divide_heroes(self, heroes):
+        for hero in heroes:
+            if heroes.controller.name.lower() == 'strafos':
+                ally = hero
+            else:
+                enemy = hero
+        return ally, enemy
+
     def divide_minions(self, board_minions):
         ally_minions = []
         enemy_minions = []

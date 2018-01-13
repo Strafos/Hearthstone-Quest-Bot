@@ -60,5 +60,21 @@ def test_simple_smorcAI():
     hand, turn, board, game_step, mana = game_reader.update_state()
     print(AI.simple_smorc(board))
     
+def get_enemy_hp():
+    AI = HearthstoneAI()
+    game_reader = GameReader.GameReader("Linux")
+    hand, turn, board, game_step, mana = game_reader.update_state()
 
-test_simple_smorcAI()
+    game = game_reader.get_game()
+    for i in game.in_zone(1):
+        print(i)
+        if type(i) == Card and 'HERO' in i.card_id:
+            for j in i.tags:
+                print(j)
+            print(i.tags[GameTag.HEALTH])
+    # p1 = (game.players[0])
+    # print(p1.tags)
+    # for i in p1.tags:
+    #     print(i)
+
+get_enemy_hp()

@@ -145,7 +145,6 @@ class SerpentHearthstoneGameAgent(GameAgent):
 
         if card_pos == -1:
             self.hero_power(mouse)
-            return
 
         if card_pos == 0 or card_pos > handsize:
             return None
@@ -196,13 +195,15 @@ class SerpentHearthstoneGameAgent(GameAgent):
             # 1. Calculate best chain of cards to play using HearthstoneAI.play_cards
             # 2. Play first card and wait in case of drawing card
             # 3. Repeat steps 1-2
+            time.sleep(2)
             chain, val= HearthstoneAI.play_card(hand, mana)
-            time.sleep(5)
             timeout = 0
+            hp = 1
             while chain and turn and len(board.ally_minions) != 7 and timeout < 11:
                 self.play_card(mouse, hand.size, chain[0])
-                time.sleep(2)
-                hand, turn, board, game_step, mana = game_reader.update_state()
+                hp = chain[0] != -1
+                time.sleep(1)
+                hand, turn, board, game_step, mana = game_reader.update_state(hp)
                 if mana == 0:
                     break
                 chain, val = HearthstoneAI.play_card(hand, mana)
@@ -219,20 +220,24 @@ class SerpentHearthstoneGameAgent(GameAgent):
             while chain and turn and timeout < 10:
                 timeout += 1
                 self.attack(mouse, len(board.ally_minions), len(board.enemy_minions), chain[0])
-                # time.sleep(1)
+                time.sleep(1)
                 hand, turn, board, game_step, mana = game_reader.update_state()
                 chain = HearthstoneAI.simple_smorc(board)
 
             ## Second play phase (in case board was full before)
             chain, val= HearthstoneAI.play_card(hand, mana)
+            timeout = 0
+            hp = 1
             while chain and turn and len(board.ally_minions) != 7 and timeout < 11:
                 self.play_card(mouse, hand.size, chain[0])
-                time.sleep(2)
-                hand, turn, board, game_step, mana = game_reader.update_state()
+                hp = chain[0] != -1
+                time.sleep(1)
+                hand, turn, board, game_step, mana = game_reader.update_state(hp)
                 if mana == 0:
                     break
                 chain, val = HearthstoneAI.play_card(hand, mana)
                 timeout += 1
+            chain, val= HearthstoneAI.play_card(hand, mana)
             
             if mana >= 2:
                 self.hero_power()
