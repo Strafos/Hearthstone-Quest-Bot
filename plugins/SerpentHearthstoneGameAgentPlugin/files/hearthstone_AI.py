@@ -6,7 +6,9 @@ class HearthstoneAI:
     def get_mulligan(hand):
         mull = []
         for card in hand:
-            if card.cost >= 3:
+            if hand.size == 3 and card.cost >= 3:
+                mull.append(card.position)
+            if hand.size == 4 and card.cost >= 4:
                 mull.append(card.position)
         return mull
 

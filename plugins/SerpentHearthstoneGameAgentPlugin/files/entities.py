@@ -22,17 +22,13 @@ class HandMinion(BaseHandCard):
                     value += self.attack
                 else:
                     value += 1
-        # if self.mechanics:
-            # for mechanic in ["TAUNT", "BATTLECRY", "DEATHRATTLE", "CHARGE"]:
-            #     if mechanic in self.mechanics:
-            #         value += 1
         return value
 
 class HandSpell(BaseHandCard):
     def __init__(self, name, id, cost, position):
         # print(position)
         super().__init__(name, id, cost, position)
-        self.value = self.cost + .5
+        self.value = 2*self.cost + .5
 
 class HandWeapon(BaseHandCard):
     def __init__(self, name, id, cost, position, attack, durability):
@@ -63,11 +59,7 @@ class Hand:
             self.size += 1
     
     def sort_by_cost(self):
-        # for i in self.hand:
-        #     print(i.name)
         self.hand.sort(key=lambda card: card.cost)
-        # for i in self.hand:
-        #     print(i.name)
 
 class BaseBoardCard:
     def __init__(self, name, id, position, controller):
@@ -106,6 +98,8 @@ class Board:
         self.ally, self.enemy = self.divide_heroes(heroes)
     
     def divide_heroes(self, heroes):
+        ally = None
+        enemy = None
         for hero in heroes:
             if hero.controller.name.lower() == 'strafos':
                 ally = hero

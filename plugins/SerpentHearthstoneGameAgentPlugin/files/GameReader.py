@@ -31,6 +31,7 @@ class GameReader:
         self.card_data = self.get_card_data()
         self.friendly_player, self.enemy_player = self.read_players()
 
+    ## Read card.json for Hearthstone card data
     def get_card_data(self):
         if self.os == "Windows":
             json_dir = r"C:\Users\Zaibo\Desktop\playground\sai\plugins\SerpentHearthstoneGameAgentPlugin\files\cards.json"
@@ -42,10 +43,14 @@ class GameReader:
             json_str = json_file.read()
         return json.loads(json_str)
 
+    ## Access json for card data given card_id
     def get_card_info(self, card_id):
         for card in self.card_data:
             if card['id'] == card_id:
                 return card
+
+    def get_current_player(self):
+        return self.game.current_player
 
     def get_game(self):
         return self.game
@@ -88,12 +93,13 @@ class GameReader:
                         card_info['attack'], 
                         card_info['durability'])
                     hand.add_card(weapon)
-        if hp:
+        if hp and board.enemy:
             hero_power = entities.HeroPower('Hero Power', 2, -2, 'Hunter', board.enemy.health)
             hand.add_card(hero_power)
         hand.sort_by_cost()
         return hand
     
+    ## Create board object
     def get_current_board(self):
         minions = []
         weapons = []
@@ -139,9 +145,6 @@ class GameReader:
                             )
                             heroes.append(hero)
         return entities.Board(minions, heroes, weapons)
-
-    def get_current_player(self):
-        return self.game.current_player
 
     ## Update Game object by rereading logs
     def update_state(self, hp=1):
