@@ -143,6 +143,10 @@ class SerpentHearthstoneGameAgent(GameAgent):
             [(0, 0), (275, 462), (300, 455), (328, 448), (352, 444), (376, 435), (396, 434), (426, 436), (450, 437), (472, 444), (503, 446)]
         ]
 
+        if card_pos == -1:
+            self.hero_power(mouse)
+            return
+
         if card_pos == 0 or card_pos > handsize:
             return None
 
@@ -160,6 +164,10 @@ class SerpentHearthstoneGameAgent(GameAgent):
         board = (235, 159)
         mouse.move(board[0], board[1], .2)
         mouse.click()
+    
+    def hero_power(self, mouse):
+        mouse.move(490, 358, .25)
+        mouse.click()
 
     def setup_play(self):
         mouse = InputController(game = self.game)
@@ -176,10 +184,10 @@ class SerpentHearthstoneGameAgent(GameAgent):
         # print(game_step)
         if game_step == Step.BEGIN_MULLIGAN:
             # Mulligan step
-            time.sleep(4)
+            # time.sleep(4)
             mull = HearthstoneAI.get_mulligan(hand.hand)
             self.mull_card(mouse, hand, mull)
-            time.sleep(4)
+            # time.sleep(4)
         elif game_step == Step.FINAL_GAMEOVER:
             # Start new game
             self.start_game(mouse)
@@ -211,9 +219,23 @@ class SerpentHearthstoneGameAgent(GameAgent):
             while chain and turn and timeout < 10:
                 timeout += 1
                 self.attack(mouse, len(board.ally_minions), len(board.enemy_minions), chain[0])
-                time.sleep(2)
+                # time.sleep(1)
                 hand, turn, board, game_step, mana = game_reader.update_state()
                 chain = HearthstoneAI.simple_smorc(board)
 
+            ## Second play phase (in case board was full before)
+            chain, val= HearthstoneAI.play_card(hand, mana)
+            while chain and turn and len(board.ally_minions) != 7 and timeout < 11:
+                self.play_card(mouse, hand.size, chain[0])
+                time.sleep(2)
+                hand, turn, board, game_step, mana = game_reader.update_state()
+                if mana == 0:
+                    break
+                chain, val = HearthstoneAI.play_card(hand, mana)
+                timeout += 1
+            
+            if mana >= 2:
+                self.hero_power()
+
             self.end_turn(mouse)
-            time.sleep(2)
+            # time.sleep(2)

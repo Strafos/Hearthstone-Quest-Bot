@@ -88,6 +88,8 @@ class GameReader:
                         card_info['attack'], 
                         card_info['durability'])
                     hand.add_card(weapon)
+        hero_power = entities.HandSpell('Hero Power', None, 2, -1,)
+        hand.add_card(hero_power)
         hand.sort_by_cost()
         return hand
     
