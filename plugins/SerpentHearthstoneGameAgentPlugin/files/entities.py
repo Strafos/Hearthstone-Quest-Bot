@@ -59,20 +59,20 @@ class BaseBoardCard:
         self.controller = controller
 
 class BoardMinion(BaseBoardCard):
-    def __init__(self, name, id, position, controller, attack, health, taunt, exhausted, card):
+    def __init__(self, name, id, position, controller, attack, health, taunt, exhausted):
         super().__init__(name, id, position, controller)
         self.attack = attack
         self.health = health
         self.taunt = taunt
         self.exhausted = exhausted
-        self.card = card
+        # self.card = card
 
 class BoardWeapon(BaseBoardCard):
-    def __init__(self, name, id, position, controller, attack, durability, card):
+    def __init__(self, name, id, position, controller, attack, durability):
         super().__init__(name, id, position, controller)
         self.attack = attack
         self.durability = durability
-        self.card = card
+        # self.card = card
 
 # class BoardEnchantments(BaseBoardCard):
 

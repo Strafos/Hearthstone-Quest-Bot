@@ -85,9 +85,6 @@ class HearthstoneAI:
             chain.append((attackers[i].position, 0))
         
         return chain
-
-
-
             
     @staticmethod
     # Kills taunts efficiently by taking value trades and minimizing overkill    

@@ -190,14 +190,15 @@ class SerpentHearthstoneGameAgent(GameAgent):
             # 3. Repeat steps 1-2
             chain, val= HearthstoneAI.play_card(hand, mana)
             time.sleep(5)
-            while chain and turn and len(board.ally_minions) != 7:
-                print(board)
+            timeout = 0
+            while chain and turn and len(board.ally_minions) != 7 and timeout < 11:
                 self.play_card(mouse, hand.size, chain[0])
                 time.sleep(2)
                 hand, turn, board, game_step, mana = game_reader.update_state()
                 if mana == 0:
                     break
                 chain, val = HearthstoneAI.play_card(hand, mana)
+                timeout += 1
             
             ## ATTACK PHASE
             # Attacking strategy:
