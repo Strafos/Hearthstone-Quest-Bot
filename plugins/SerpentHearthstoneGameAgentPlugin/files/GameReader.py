@@ -139,7 +139,7 @@ class GameReader:
         self.friendly_player = self.get_friendly()
 
         hand = self.get_current_hand()
-        turn = self.get_current_player()
+        turn = self.get_current_player().name in self.player_names
         board = self.get_current_board()
         game_step = self.get_game_step()
         mana = self.get_current_mana()
