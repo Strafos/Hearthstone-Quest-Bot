@@ -85,11 +85,11 @@ class GameReader:
                     card_type = card_info['type']
                     if card_info and card_type != "HERO_POWER":
                         if card_type == 'WEAPON':
-                            weapon = entities.BoardWeapon(card_info['name'], id, board_card.tags[GameTag.ZONE_POSITION], board_card.controller, board_card.tags[GameTag.ATK], board_card.tags[GameTag.DURABILITY])
+                            weapon = entities.BoardWeapon(card_info['name'], id, board_card.tags[GameTag.ZONE_POSITION], board_card.controller, board_card.tags[GameTag.ATK], board_card.tags[GameTag.DURABILITY], board_card)
                             weapons.append(weapon)
                             # weapons.append(board_card)
                         elif card_type == 'MINION':
-                            minion = entities.BoardMinion(self, card_info['name'], id, board_card.tags[GameTag.ZONE_POSITION], board_card.controller, board_card.tags[GameTag.ATK], board_card.tags[GameTag.HEALTH], board_card.tags[GameTag.TAUNT])
+                            minion = entities.BoardMinion(card_info['name'], id, board_card.tags[GameTag.ZONE_POSITION], board_card.controller, board_card.tags[GameTag.ATK], board_card.tags[GameTag.HEALTH], board_card.tags[GameTag.TAUNT], board_card)
                             minions.append(minion)
                             # minions.append(board_card)
         return entities.Board(minions, weapons)
