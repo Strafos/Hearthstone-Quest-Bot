@@ -92,6 +92,41 @@ class SerpentHearthstoneGameAgent(GameAgent):
             mouse.click()
         self.end_turn(mouse, True)
 
+    def attack(self, mouse, ally_board_size, enemy_board_size, attack_pos):
+        # attack_pos examples: 
+        # (5, 3)
+        # (2, 0)
+        card_location_x = [
+            [0],
+            [0, 416],
+            [0, 385, 443],
+            [0, 357, 416, 473],
+            [0, 320, 385, 443, 500],
+            [0, 290, 354, 411, 473, 535],
+            [0, 260, 320, 385, 443, 500, 566],
+            [0, 230, 290, 354, 411, 473, 535, 594],
+        ]
+        enemy_y = 170
+        ally_y = 258
+
+        # Hero
+        if attack_pos[0] == 0:
+            x1 = 416
+            y1 = 357
+        else:
+            x1 = card_location_x[ally_board_size][attack_pos[0]]
+            y1 = ally_y
+        mouse.move(x1, y1, .25)
+        mouse.click()
+
+        if attack_pos[1] == 0:
+            x2 = 416
+            y2 = 88
+        else:
+            x2 = card_location_x[enemy_board_size][attack_pos[1]]
+            y2 = enemy_y
+        mouse.move(x2, y2, .25)
+        mouse.click()
 
     def play_card(self, mouse, handsize, card_pos):
         card_location = [
@@ -150,12 +185,12 @@ class SerpentHearthstoneGameAgent(GameAgent):
             self.start_game(mouse)
         elif turn:
             ## CARD PLAY PHASE
+            # 1. Calculate best chain of cards to play using HearthstoneAI.play_cards
+            # 2. Play first card and wait in case of drawing card
+            # 3. Repeat steps 1-2
             chain, val= HearthstoneAI.play_card(hand, mana)
             time.sleep(5)
             while chain and turn:
-                # 1. Calculate best chain of cards to play using HearthstoneAI.play_cards
-                # 2. Play first card and wait in case of drawing card
-                # 3. Repeat steps 1-2
                 self.play_card(mouse, hand.size, chain[0])
                 time.sleep(3)
                 hand, turn, board, game_step, mana = game_reader.update_state()
@@ -168,5 +203,13 @@ class SerpentHearthstoneGameAgent(GameAgent):
             # 1. Calculate chain of attack actions
             # 2. Execute first attack action and wait (in case of deathrattle summons)
             # 3. Repeat steps 1-2 until no minions can attack anymore
+            hand, turn, board, game_step, mana = game_reader.update_state()
+            chain = HearthstoneAI.simple_smorc(board)
+            while chain and turn:
+                self.attack(mouse, len(board.ally_minions), len(board.enemy_minions), chain[0])
+                time.sleep(3)
+                hand, turn, board, game_step, mana = game_reader.update_state()
+                chain = HearthstoneAI.simple_smorc(board)
+
             self.end_turn(mouse)
             time.sleep(2)
