@@ -98,13 +98,18 @@ class GameReader:
                                 # board_card)
                             weapons.append(weapon)
                         elif card_type == 'MINION':
-                            try:
-                                exhaust = board_card.tags[GameTag.EXHAUSTED]
-                            except:
-                                if tags.get(GameTag.JUST_PLAYED, 0) and tags.get(GameTag.CHARGE, 0):
-                                    exhaust = 1
-                                else:
-                                    exhaust = 0
+                            # try:
+                            #     exhaust = board_card.tags[GameTag.EXHAUSTED]
+                            # except:
+                            #     # if tags.get(GameTag.JUST_PLAYED, 0) and tags.get(GameTag.CHARGE, 0):
+                            #     if tags.get(GameTag.CHARGE, 0):
+                            #         exhaust = 1
+                            #     else:
+                            #         exhaust = 0
+                            exhaust = tags.get(GameTag.EXHAUSTED, not tags.get(GameTag.CHARGE, 0))
+                            if tags.get(GameTag.FROZEN):
+                                exhaust = 1
+                            print("ex: " + str(exhaust))
                             minion = entities.BoardMinion(
                                 card_info['name'], 
                                 id, 

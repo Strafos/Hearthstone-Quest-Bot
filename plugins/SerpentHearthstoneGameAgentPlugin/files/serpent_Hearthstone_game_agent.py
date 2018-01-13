@@ -207,7 +207,9 @@ class SerpentHearthstoneGameAgent(GameAgent):
             # 3. Repeat steps 1-2 until no minions can attack anymore
             hand, turn, board, game_step, mana = game_reader.update_state()
             chain = HearthstoneAI.simple_smorc(board)
-            while chain and turn:
+            timeout = 0
+            while chain and turn and timeout < 10:
+                timeout += 1
                 self.attack(mouse, len(board.ally_minions), len(board.enemy_minions), chain[0])
                 time.sleep(2)
                 hand, turn, board, game_step, mana = game_reader.update_state()
