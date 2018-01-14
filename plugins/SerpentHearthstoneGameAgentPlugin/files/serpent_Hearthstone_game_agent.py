@@ -215,14 +215,14 @@ class SerpentHearthstoneGameAgent(GameAgent):
 
             self.end_turn(mouse)
         
-        if board.ally and board.enemy:
+        playstate = game_reader.friendly_player.tags.get(GameTag.PLAYSTATE, None)
+        if playstate == 'WON' or playstate == 'LOST':
             hash_input = board.ally.name + board.enemy.name
             hashcode = hashlib.md5(hash_input.encode('utf-8')).hexdigest()
             if hashcode != hash:
-                print(game_reader.friendly_player.tags[GameTag.PLAYSTATE])
-                if game_reader.friendly_player.tags[GameTag.PLAYSTATE] == 'WON':
+                if playstate == 'WON':
                     wins += 1
-                else:
+                elif playstate == 'LOST':
                     losses += 1
                 total += 1
                 print("Win ratio: " + str(wins/total))

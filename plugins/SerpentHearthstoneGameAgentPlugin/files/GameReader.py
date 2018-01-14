@@ -26,7 +26,10 @@ class GameReader:
         parser.flush()
 
         packet_tree = parser.games[-1]
-        self.game = EntityTreeExporter(packet_tree).export().game
+        try:
+            self.game = EntityTreeExporter(packet_tree).export().game
+        except:
+            self.game = EntityTreeExporter(packet_tree).export().game
         self.player_names = ['Strafos', 'strafos']
         self.card_data = self.get_card_data()
         self.friendly_player, self.enemy_player = self.read_players()
@@ -160,7 +163,10 @@ class GameReader:
         parser.flush()
 
         packet_tree = parser.games[-1]
-        self.game = EntityTreeExporter(packet_tree).export().game
+        try:
+            self.game = EntityTreeExporter(packet_tree).export().game
+        except:
+            self.game = EntityTreeExporter(packet_tree).export().game
         self.friendly_player, self.enemy_player = self.read_players()
 
         turn = self.get_current_player().name in self.player_names
