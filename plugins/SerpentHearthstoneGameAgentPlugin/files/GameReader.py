@@ -89,7 +89,7 @@ class GameReader:
                         card_info['durability'])
                     hand.add_card(weapon)
         if hp:
-            hero_power = entities.HeroPower('Hero Power', 2, 'Hunter', board.enemy.health)
+            hero_power = entities.HeroPower('Hero Power', 2, -2, 'Hunter', board.enemy.health)
             hand.add_card(hero_power)
         hand.sort_by_cost()
         return hand
@@ -131,20 +131,20 @@ class GameReader:
                             minions.append(minion)
                         elif card_type == 'HERO':
                             hero = entities.BoardHero(
-                                card_info['name']
+                                card_info['name'],
                                 id,
                                 None,
                                 board_card.controller,
                                 tags.get(GameTag.HEALTH, 30)
                             )
                             heroes.append(hero)
-        return entities.Board(minions, weapons, hero)
+        return entities.Board(minions, heroes, weapons)
 
     def get_current_player(self):
         return self.game.current_player
 
     ## Update Game object by rereading logs
-    def update_state(self, hp):
+    def update_state(self, hp=1):
         parser = LogParser()
         if self.os == "Windows":
             log_dir = r"C:\Program Files (x86)\Hearthstone\Logs\Power.log"

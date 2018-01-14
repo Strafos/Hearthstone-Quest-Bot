@@ -16,11 +16,12 @@ class HandMinion(BaseHandCard):
     
     def calc_value(self):
         value = self.attack*1.1 + self.health # + 1 To weight playing more cards
-        for mechanic in self.mechanics:
-            if mechanic == "CHARGE":
-                value += self.attack
-            else:
-                value += 1
+        if self.mechanics:
+            for mechanic in self.mechanics:
+                if mechanic == "CHARGE":
+                    value += self.attack
+                else:
+                    value += 1
         # if self.mechanics:
             # for mechanic in ["TAUNT", "BATTLECRY", "DEATHRATTLE", "CHARGE"]:
             #     if mechanic in self.mechanics:
@@ -42,9 +43,10 @@ class HandWeapon(BaseHandCard):
 
 class HeroPower():
     # Hunter HP
-    def __init__(self, name, cost, hero, enemy_health):
+    def __init__(self, name, cost, position, hero, enemy_health):
         self.name = name
         self.cost = cost
+        self.position = -2
         self.value = 0
         self.hero = hero
         if enemy_health <= 15:
@@ -98,14 +100,14 @@ class BoardHero(BaseBoardCard):
 # class BoardEnchantments(BaseBoardCard):
 
 class Board:
-    def __init__(self, board_minions, weapons=None, heroes):
+    def __init__(self, board_minions, heroes, weapons=None):
         self.ally_minions, self.enemy_minions = self.divide_minions(board_minions)
         self.weapon = self.find_friendly_weapon(weapons)
-        self.ally, self.enemy = divide_heroes(self, heroes)
+        self.ally, self.enemy = self.divide_heroes(heroes)
     
     def divide_heroes(self, heroes):
         for hero in heroes:
-            if heroes.controller.name.lower() == 'strafos':
+            if hero.controller.name.lower() == 'strafos':
                 ally = hero
             else:
                 enemy = hero

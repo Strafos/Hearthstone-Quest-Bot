@@ -77,4 +77,17 @@ def get_enemy_hp():
     # for i in p1.tags:
     #     print(i)
 
-get_enemy_hp()
+def won():
+    a = time.time()
+    AI = HearthstoneAI()
+    game_reader = GameReader.GameReader("Windows")
+    b = time.time()
+    print(b-a)
+    # hand, turn, board, game_step, mana = game_reader.update_state()
+    game = game_reader.get_game()
+    print(game.tags)
+    for i in game.tags:
+        print(i)
+    print(game.tags[GameTag.STATE])
+
+won()

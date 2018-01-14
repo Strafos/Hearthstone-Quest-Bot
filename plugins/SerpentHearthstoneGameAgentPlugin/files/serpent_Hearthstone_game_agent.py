@@ -183,7 +183,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
         # print(game_step)
         if game_step == Step.BEGIN_MULLIGAN:
             # Mulligan step
-            # time.sleep(4)
+            time.sleep(2)
             mull = HearthstoneAI.get_mulligan(hand.hand)
             self.mull_card(mouse, hand, mull)
             # time.sleep(4)
@@ -240,7 +240,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
             chain, val= HearthstoneAI.play_card(hand, mana)
             
             if mana >= 2:
-                self.hero_power()
+                self.hero_power(mouse)
 
             self.end_turn(mouse)
             # time.sleep(2)
