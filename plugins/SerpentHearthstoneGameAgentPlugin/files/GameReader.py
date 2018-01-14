@@ -5,6 +5,7 @@ from hearthstone.entities import Player, Card
 
 import json
 import io 
+import time
 
 import entities
 # from board_state import DATA
@@ -29,7 +30,12 @@ class GameReader:
         try:
             self.game = EntityTreeExporter(packet_tree).export().game
         except:
-            self.game = EntityTreeExporter(packet_tree).export().game
+            time.sleep(5)
+            try:
+                self.game = EntityTreeExporter(packet_tree).export().game
+            except:
+                time.sleep(5)
+                self.game = EntityTreeExporter(packet_tree).export().game
         self.player_names = ['Strafos', 'strafos']
         self.card_data = self.get_card_data()
         self.friendly_player, self.enemy_player = self.read_players()
@@ -177,6 +183,8 @@ class GameReader:
         return hand, turn, board, game_step, mana
 
     def read_players(self):
+        friendly = None
+        enemy = None
         for player in self.game.players:
             if player.name in self.player_names:
                 friendly = player

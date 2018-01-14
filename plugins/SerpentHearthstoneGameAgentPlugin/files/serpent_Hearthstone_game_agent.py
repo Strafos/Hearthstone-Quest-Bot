@@ -1,7 +1,7 @@
 from serpent.game_agent import GameAgent
 from serpent.input_controller import MouseButton, InputController
 
-from hearthstone.enums import GameTag, Step
+from hearthstone.enums import GameTag, Step, PlayState
 
 import json
 import io
@@ -216,13 +216,13 @@ class SerpentHearthstoneGameAgent(GameAgent):
             self.end_turn(mouse)
         
         playstate = game_reader.friendly_player.tags.get(GameTag.PLAYSTATE, None)
-        if playstate == 'WON' or playstate == 'LOST':
+        if playstate == PlayState.WON or playstate == PlayState.LOST:
             hash_input = board.ally.name + board.enemy.name
             hashcode = hashlib.md5(hash_input.encode('utf-8')).hexdigest()
             if hashcode != hash:
-                if playstate == 'WON':
+                if playstate == PlayState.WON:
                     wins += 1
-                elif playstate == 'LOST':
+                elif playstate == PlayState.LOST:
                     losses += 1
                 total += 1
                 print("Win ratio: " + str(wins/total))
