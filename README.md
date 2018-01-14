@@ -4,4 +4,4 @@ This program will autonomously complete Hearthstone daily quests. It uses serpen
 ## Dependencies:
 hslog: `pip install hslog`
 python-hearthstone: `pip install hearthstone`
-serpentAI
+serpentAI: `pip install serpentAI`

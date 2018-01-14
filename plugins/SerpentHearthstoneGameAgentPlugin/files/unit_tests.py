@@ -7,6 +7,7 @@ from hearthstone.entities import Player, Card
 import json
 import io
 import time
+import hashlib
 
 import entities
 from hearthstone_AI import HearthstoneAI
@@ -90,8 +91,20 @@ def won():
         print(i)
     print(game.tags[GameTag.STATE])
 
-def log_tests():
+def log_writing_test():
     f = open('Logs/test.log', 'w')
-    f.write('Wins: 20')
-    f.write('Loses: 10')
-    f.write('Total: 5')
+    f.write('Wins: 20\n')
+    f.write('Loses: 10\n')
+    f.write('Total: 5\n')
+
+def log_read_test():
+    f = open('Logs/test.log', 'r')
+    wins = []
+    for line in f.readlines():
+        string = line.split(' ')
+        wins.append((int)(string[-1].strip()))
+    print(wins)
+    print(hashlib.md5(b"Hello").hexdigest())
+
+log_writing_test()
+log_read_test()

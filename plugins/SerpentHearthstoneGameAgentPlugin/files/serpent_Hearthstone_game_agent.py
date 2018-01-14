@@ -13,8 +13,6 @@ import locations
 from hearthstone_AI import HearthstoneAI
 import GameReader
 
-# TODO remove Log folder
-
 # Preforms in-game actions using input controller
 class SerpentHearthstoneGameAgent(GameAgent):
     def __init__(self, **kwargs):
@@ -143,6 +141,13 @@ class SerpentHearthstoneGameAgent(GameAgent):
         AI = HearthstoneAI()
         game_reader = GameReader.GameReader("Windows")
 
+        with open('Logs/wins.log', 'r') as f:
+            data = []
+            for line in f.readlines():
+                string = line.split(' ')
+                data.append((string[-1].strip()))
+            wins, losses, total, hash = (int)data[0], (int)data[1], (int)data[2], data[3]
+
         hand, turn, board, game_step, mana = game_reader.update_state()
         # print(game_step)
         if game_step == Step.BEGIN_MULLIGAN:
@@ -207,4 +212,19 @@ class SerpentHearthstoneGameAgent(GameAgent):
                 self.hero_power(mouse)
 
             self.end_turn(mouse)
-            # time.sleep(2)
+        
+        if board.ally and board.enemy:
+            hash_input = board.ally.name + board.enemy.name
+            hashcode = hashlib.md5(hash_input.encode('utf-8')).hexdigest()
+            if hashcode != hash:
+                print(board.ally.tags[GameTag.PLAYSTATE])
+                if board.ally.tags[GameTag.PLAYSTATE] == 'WON':
+                    wins += 1
+                else:
+                    losses += 1
+                total += 1
+                with open('Logs/wins.log', 'w'):
+                    f.write('Wins: ' + str(wins) + '\n')
+                    f.write('Losses: ' + str(losses) + '\n')
+                    f.write('Total: ' + str(total) + '\n')
+                    f.write(hashcode)

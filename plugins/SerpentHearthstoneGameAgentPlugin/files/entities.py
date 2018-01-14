@@ -12,7 +12,6 @@ class HandMinion(BaseHandCard):
         self.health = health
         self.mechanics = mechanics
         self.value = self.calc_value()
-        # race? (elemental, pirate, murloc)
     
     def calc_value(self):
         value = self.attack*1.1 + self.health # + 1 To weight playing more cards
