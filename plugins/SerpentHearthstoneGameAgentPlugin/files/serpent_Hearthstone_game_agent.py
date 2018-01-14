@@ -7,6 +7,7 @@ import json
 import io
 import time
 from io import StringIO
+import hashlib
 
 import entities
 import locations
@@ -97,7 +98,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
             x2 = 416
             y2 = 88
         else:
-            x2 = card_location_x[enemy_board_size][attack_pos[1]]
+            x2 = card_locations_x[enemy_board_size][attack_pos[1]]
             y2 = enemy_y
         mouse.move(x2, y2, .25)
         mouse.click()
@@ -141,12 +142,13 @@ class SerpentHearthstoneGameAgent(GameAgent):
         AI = HearthstoneAI()
         game_reader = GameReader.GameReader("Windows")
 
-        with open('Logs/wins.log', 'r') as f:
+        # with open('Logs/wins.log', 'r') as f:
+        with io.open(r'Logs\wins.log', 'r') as f:
             data = []
             for line in f.readlines():
                 string = line.split(' ')
                 data.append((string[-1].strip()))
-            wins, losses, total, hash = (int)data[0], (int)data[1], (int)data[2], data[3]
+            wins, losses, total, hash = (int)(data[0]), (int)(data[1]), (int)(data[2]), data[3]
 
         hand, turn, board, game_step, mana = game_reader.update_state()
         # print(game_step)
@@ -217,14 +219,15 @@ class SerpentHearthstoneGameAgent(GameAgent):
             hash_input = board.ally.name + board.enemy.name
             hashcode = hashlib.md5(hash_input.encode('utf-8')).hexdigest()
             if hashcode != hash:
-                print(board.ally.tags[GameTag.PLAYSTATE])
-                if board.ally.tags[GameTag.PLAYSTATE] == 'WON':
+                print(game_reader.friendly_player.tags[GameTag.PLAYSTATE])
+                if game_reader.friendly_player.tags[GameTag.PLAYSTATE] == 'WON':
                     wins += 1
                 else:
                     losses += 1
                 total += 1
-                with open('Logs/wins.log', 'w'):
+                print("Win ratio: " + str(wins/total))
+                with io.open(r'Logs/wins.log', 'w') as f:
                     f.write('Wins: ' + str(wins) + '\n')
                     f.write('Losses: ' + str(losses) + '\n')
                     f.write('Total: ' + str(total) + '\n')
-                    f.write(hashcode)
+                    f.write('Hash: ' + hashcode + '\n')
