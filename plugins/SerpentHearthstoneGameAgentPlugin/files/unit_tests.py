@@ -106,5 +106,11 @@ def log_read_test():
     print(wins)
     print(hashlib.md5(b"Hello").hexdigest())
 
-log_writing_test()
-log_read_test()
+def hash_test():
+    AI = HearthstoneAI()
+    game_reader = GameReader.GameReader("Windows")
+    hand, turn, board, game_step, mana = game_reader.update_state()
+    print(board.ally)
+    playstate = game_reader.friendly_player.tags.get(GameTag.PLAYSTATE, None)
+    print(playstate)
+hash_test()

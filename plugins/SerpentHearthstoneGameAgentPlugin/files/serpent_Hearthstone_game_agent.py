@@ -186,6 +186,9 @@ class SerpentHearthstoneGameAgent(GameAgent):
             # 2. Execute first attack action and wait (in case of deathrattle summons)
             # 3. Repeat steps 1-2 until no minions can attack anymore
             hand, turn, board, game_step, mana = game_reader.update_state()
+            if board.ally and board.enemy:
+                hash_input = board.ally.name + board.enemy.name
+                hashcode = hashlib.md5(hash_input.encode('utf-8')).hexdigest()
             chain = HearthstoneAI.simple_smorc(board)
             timeout = 0
             while chain and turn and timeout < 10:
@@ -217,8 +220,6 @@ class SerpentHearthstoneGameAgent(GameAgent):
         
         playstate = game_reader.friendly_player.tags.get(GameTag.PLAYSTATE, None)
         if playstate == PlayState.WON or playstate == PlayState.LOST:
-            hash_input = board.ally.name + board.enemy.name
-            hashcode = hashlib.md5(hash_input.encode('utf-8')).hexdigest()
             if hashcode != hash:
                 if playstate == PlayState.WON:
                     wins += 1
