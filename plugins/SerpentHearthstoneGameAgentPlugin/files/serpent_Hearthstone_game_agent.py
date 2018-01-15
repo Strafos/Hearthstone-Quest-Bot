@@ -65,7 +65,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
     def mull_card(self, mouse, hand, mull):
         card_location = locations.mulligan_locations
 
-        if hand.size == 3:
+        if hand.size == 4:
             hand_loc = card_location[0]
         else:
             hand_loc = card_location[1]
@@ -169,7 +169,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
         if board.enemy:
             curr_oppo = board.enemy.name
         if game_step == Step.BEGIN_MULLIGAN:
-            time.sleep(4)
+            time.sleep(2)
             mull = HearthstoneAI.get_mulligan(hand.hand)
             self.mull_card(mouse, hand, mull)
         elif game_step == Step.FINAL_GAMEOVER:
@@ -183,12 +183,12 @@ class SerpentHearthstoneGameAgent(GameAgent):
             chain, val= HearthstoneAI.play_card(hand, mana)
             playstate = game_reader.friendly_player.tags.get(GameTag.PLAYSTATE, None)
             game_end = playstate == PlayState.WON or playstate == PlayState.LOST
+            print("Hand" + str(hand))
+            print("Play_chain" + str(chain))
             timeout = 0
             hp = 1
             while chain and turn and len(board.ally_minions) != 7 and not game_end and timeout < 11:
                 playstate = game_reader.friendly_player.tags.get(GameTag.PLAYSTATE, None)
-                print("Hand" + str(hand))
-                print("Play_chain" + str(chain))
                 self.play_card(mouse, hand.size, chain[0])
 
                 hp = chain[0] != -1
@@ -203,6 +203,8 @@ class SerpentHearthstoneGameAgent(GameAgent):
                     break
                 t5 = time.time()
                 chain, val = HearthstoneAI.play_card(hand, mana)
+                print("Hand" + str(hand))
+                print("Play_chain" + str(chain))
                 t6 = time.time()
                 print("play_card AI: " + str(t6-t5))
                 timeout += 1
@@ -222,10 +224,8 @@ class SerpentHearthstoneGameAgent(GameAgent):
             playstate = game_reader.friendly_player.tags.get(GameTag.PLAYSTATE, None)
             game_end = playstate == PlayState.WON or playstate == PlayState.LOST
             chain = HearthstoneAI.smarter_smorc(board)
+            print("Attack Chain: " + str(chain))
             while chain and turn and not game_end and timeout < 10:
-                # print("Board")
-                # print(board)
-                print(chain)
                 timeout += 1
                 self.attack(mouse, len(board.ally_minions), len(board.enemy_minions), chain[0])
                 game_end = playstate == PlayState.WON or playstate == PlayState.LOST
@@ -233,6 +233,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
                 time.sleep(1)
                 hand, turn, board, game_step, mana = game_reader.update_state()
                 chain = HearthstoneAI.smarter_smorc(board)
+                print("Attack Chain: " + str(chain))
             t1 = time.time()
             print("ATTACK PHASE: " + str(t1-t0))
 

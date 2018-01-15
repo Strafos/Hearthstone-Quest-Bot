@@ -65,7 +65,7 @@ class HearthstoneAI:
                 coin = True
             chain.append(elem[0])
         if coin:
-            chain.insert(0, coin_elem[0])
+            chain.insert(0, coin_elem)
 
         return chain, val
 
@@ -153,7 +153,8 @@ class HearthstoneAI:
                 chain.pop()
             return best_chain, best
 
-        # Optimize attack pattern for first taunt minion
+        # Optimize attack pattern for lowest health taunt minion
+        taunters.sort(key=lambda card: card.health)
         enemy = taunters[0]
         health = enemy.health
         if board.weapon:
