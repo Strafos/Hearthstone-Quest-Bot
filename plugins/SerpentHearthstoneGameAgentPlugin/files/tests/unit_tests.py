@@ -139,8 +139,12 @@ def play_phase_test():
     AI = HearthstoneAI()
     game_reader = GameReader.GameReader("Linux", board_state)
     hand, turn, board, game_step, mana = game_reader.update_state()
+    t1 = time.time()
     chain, val = HearthstoneAI.play_card(hand, mana)
+    t2 = time.time()
+    print(t2-t1)
     print(chain)
 
 
+str_test()
 play_phase_test()

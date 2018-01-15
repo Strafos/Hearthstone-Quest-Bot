@@ -28,7 +28,7 @@ class HandSpell(BaseHandCard):
         super().__init__(name, id, cost, position)
         self.value = 2*self.cost
         if name != "The Coin":
-            self.value += 1
+            self.value += .5
 
 class HandWeapon(BaseHandCard):
     def __init__(self, name, id, cost, position, attack, durability):
@@ -58,7 +58,7 @@ class Hand:
         if len(self.hand) == 0:
             return ''
         hand = sorted(self.hand, key=lambda card: card.position)
-        return ', '.join((card.name, card.value) for card in hand)
+        return ', '.join(card.name + ' ' + str(card.value) for card in hand)
 
     def add_card(self, card):
         self.hand.append(card)
