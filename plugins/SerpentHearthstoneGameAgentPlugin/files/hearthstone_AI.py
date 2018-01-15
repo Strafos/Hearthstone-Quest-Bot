@@ -7,11 +7,13 @@ class HearthstoneAI:
     @staticmethod
     def get_mulligan(hand):
         mull = []
+        print("Mulligan, handsize=" + str(len(hand)))
         for card in hand:
             if len(hand) == 4 and card.cost >= 3:
                 mull.append(card.position)
             if len(hand) == 6 and card.cost >= 4:
                 mull.append(card.position)
+        print("Mull " + str(mull))
         return mull
 
     # Return an array of cards to play this turn

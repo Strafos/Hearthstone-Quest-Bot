@@ -193,6 +193,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
         elif game_step == Step.FINAL_GAMEOVER:
             self.start_game(mouse)
         elif turn:
+            time.sleep(2)
             t0 = time.time()
             ## CARD PLAY PHASE
             # 1. Calculate best chain of cards to play using HearthstoneAI.play_cards
