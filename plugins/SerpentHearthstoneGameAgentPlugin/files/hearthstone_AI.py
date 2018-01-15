@@ -63,7 +63,6 @@ class HearthstoneAI:
     # board variable of type Board
     # Does not use weapons
     def simple_smorc(board):
-
         # Identify current taunters and attackers
         taunters = []
         for enemy in board.enemy_minions:
@@ -92,4 +91,48 @@ class HearthstoneAI:
     # Kills taunts efficiently by taking value trades and minimizing overkill    
     # board variable of type Board
     def smarter_smorc(board):
-        pass
+        # Identify current taunters and attackers
+        taunters = []
+        tot_def = 0
+        for enemy in board.enemy_minions:
+            if enemy.taunt:
+                taunters.append(enemy)
+                tot_def += enemy.health
+        attackers = []
+        tot_atk = 0
+        for ally in board.ally_minions:
+            if ally.attack > 0 and not ally.exhausted:
+                attackers.append(ally)
+                tot_atk += ally.attack
+
+        if tot_def > tot_atk:
+            return []
+
+        def dfs(attackers, health, enemy_pos, idx, chain, best):
+            if health <= 0 and health > best:
+                return chain, health
+
+            for i in range(idx, len(attackers)):
+                health -= attackers[i].attack
+                chain.append(ally, enemy_pos)
+                new_attackers = attackers[:]
+                del new_attackers[i]
+                if health > best:
+                    temp_chain, temp_best = dfs(new_attackers, health, i+1, chain, best)
+                    if temp_best > best:
+                        chain = temp_best
+                        best = temp_best
+                else:
+                    health += attackers[i].attack
+                    chain.pop()
+                    break
+                health += attackers[i].attack
+                chain.pop()
+            return chain, best
+
+        for enemy in taunters:
+            health = enemy.health
+            ## Find sum of attackers that is as close to enemy health as possible
+            attackers.sort(key= lambda card: card.attack)
+            dfs(attackers, health, enemy.position, 0, [], -1000)
+
