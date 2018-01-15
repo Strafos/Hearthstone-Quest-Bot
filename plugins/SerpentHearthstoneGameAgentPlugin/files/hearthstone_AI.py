@@ -100,7 +100,10 @@ class HearthstoneAI:
             if enemy.taunt:
                 taunters.append(enemy)
                 tot_def += enemy.health
+
         attackers = []
+        if board.weapon:
+            attackers.append(board.weapon)
         tot_atk = 0
         for ally in board.ally_minions:
             if ally.attack > 0 and not ally.exhausted:
@@ -111,6 +114,7 @@ class HearthstoneAI:
             return []
 
         if len(taunters) == 0:
+            chain = []
             for i in range(k, len(attackers)):
                 chain.append((attackers[i].position, 0))
             return chain

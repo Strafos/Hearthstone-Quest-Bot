@@ -84,7 +84,6 @@ class SerpentHearthstoneGameAgent(GameAgent):
 
         # Friendly
         if attack_pos[0] == 0:
-            # Friendly Hero coordinates
             x1 = 416
             y1 = 357
         else:

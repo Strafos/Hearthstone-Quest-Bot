@@ -130,7 +130,9 @@ def board_test():
     AI = HearthstoneAI()
     game_reader = GameReader.GameReader("Linux", board_state)
     hand, turn, board, game_step, mana = game_reader.update_state()
+    print(board.weapon.name)
+    print(board.weapon.position)
 
-    print(AI.smarter_smorc(board))
+    # print(AI.smarter_smorc(board))
 
 board_test()
