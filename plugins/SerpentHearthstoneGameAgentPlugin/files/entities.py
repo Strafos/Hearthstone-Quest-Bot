@@ -52,6 +52,13 @@ class Hand:
         self.hand = []
         self.size = 0
 
+    # Print card names in positional order
+    def __str__(self):
+        if len(self.hand) == 0:
+            return ''
+        hand = sorted(self.hand, key=lambda card: card.position)
+        return ', '.join(card.name for card in hand)
+
     def add_card(self, card):
         self.hand.append(card)
         if card.name != 'Hero Power':
@@ -88,13 +95,27 @@ class BoardHero(BaseBoardCard):
         super().__init__(name, id, position, controller)
         self.health = health
 
-# class BoardEnchantments(BaseBoardCard):
-
 class Board:
     def __init__(self, board_minions, heroes, weapons=None):
         self.ally_minions, self.enemy_minions = self.divide_minions(board_minions)
         self.weapon = self.find_friendly_weapon(weapons)
         self.ally, self.enemy = self.divide_heroes(heroes)
+    
+    def __str__(self):
+        enemy_hero_str = '{} {}hp\n'.format(self.enemy.name, self.enemy.health)
+        enemy_board = []
+        for enemy_minion in self.enemy_minions:
+            enemy_board.append('{} {}/{}'.format(enemy_minion.name, enemy_minion.attack, enemy_minion.health))
+        enemy_board_str = ' || '.join(enemy_board) + '\n'
+
+        ally_board = []
+        for ally_minion in self.ally_minions:
+            ally_board.append('{} {}/{}'.format(ally_minion.name, ally_minion.attack, ally_minion.health))
+        ally_board_str = ' || '.join(ally_board) + '\n'
+        ally_hero_str = '{} {}hp'.format(self.ally.name, self.ally.health)
+
+        return enemy_hero_str + enemy_board_str + ally_board_str + ally_hero_str
+        
     
     def divide_heroes(self, heroes):
         ally = None

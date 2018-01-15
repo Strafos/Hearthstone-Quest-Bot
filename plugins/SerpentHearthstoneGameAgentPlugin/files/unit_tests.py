@@ -113,4 +113,13 @@ def hash_test():
     print(board.ally)
     playstate = game_reader.friendly_player.tags.get(GameTag.PLAYSTATE, None)
     print(playstate)
-hash_test()
+
+def repr_test():
+    AI = HearthstoneAI()
+    game_reader = GameReader.GameReader("Linux")
+    hand, turn, board, game_step, mana = game_reader.update_state()
+
+    print(hand)
+    print(board)
+
+repr_test()

@@ -139,6 +139,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
                 hand, turn, board, game_step, mana = game_reader.update_state()
             mouse.move(820, 464, .25)
             mouse.click()
+            time.sleep(.3)
             mouse.move(412, 171, .25)
             mouse.click()
             time.sleep(3)
