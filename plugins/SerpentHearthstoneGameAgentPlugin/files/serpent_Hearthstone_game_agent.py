@@ -183,7 +183,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
             chain, val= HearthstoneAI.play_card(hand, mana)
             playstate = game_reader.friendly_player.tags.get(GameTag.PLAYSTATE, None)
             game_end = playstate == PlayState.WON or playstate == PlayState.LOST
-            print("Hand" + str(hand))
+            print("Hand: " + str(hand))
             print("Play_chain" + str(chain))
             timeout = 0
             hp = 1
