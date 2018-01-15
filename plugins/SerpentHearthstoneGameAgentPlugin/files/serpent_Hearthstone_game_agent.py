@@ -180,7 +180,6 @@ class SerpentHearthstoneGameAgent(GameAgent):
             # 1. Calculate best chain of cards to play using HearthstoneAI.play_cards
             # 2. Play first card and wait in case of drawing card
             # 3. Repeat steps 1-2
-            time.sleep(3)
             chain, val= HearthstoneAI.play_card(hand, mana)
             playstate = game_reader.friendly_player.tags.get(GameTag.PLAYSTATE, None)
             game_end = playstate == PlayState.WON or playstate == PlayState.LOST
@@ -222,7 +221,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
             hand, turn, board, game_step, mana = game_reader.update_state()
             playstate = game_reader.friendly_player.tags.get(GameTag.PLAYSTATE, None)
             game_end = playstate == PlayState.WON or playstate == PlayState.LOST
-            chain = HearthstoneAI.simple_smorc(board)
+            chain = HearthstoneAI.smarter_smorc(board)
             while chain and turn and not game_end and timeout < 10:
                 # print("Board")
                 # print(board)
