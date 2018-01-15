@@ -131,6 +131,19 @@ class SerpentHearthstoneGameAgent(GameAgent):
         mouse.move(loc[0], loc[1], .25)
         mouse.click()
 
+    def concede(self, mouse, game_reader):
+        for i in range(1):
+            hand, turn, board, game_step, mana = game_reader.update_state()
+            while game_step != Step.BEGIN_MULLIGAN:
+                self.start_game(mouse)
+                hand, turn, board, game_step, mana = game_reader.update_state()
+            mouse.move(820, 464, .25)
+            mouse.click()
+            mouse.move(412, 171, .25)
+            mouse.click()
+            time.sleep(3)
+
+
     def setup_play(self):
         mouse = InputController(game = self.game)
         return
@@ -150,7 +163,11 @@ class SerpentHearthstoneGameAgent(GameAgent):
                 data.append((string[-1].strip()))
             wins, losses, total, hash = (int)(data[0]), (int)(data[1]), (int)(data[2]), data[3]
 
+        hashcode = hash
         hand, turn, board, game_step, mana = game_reader.update_state()
+        if board.ally and board.enemy:
+            hash_input = board.ally.name + board.enemy.name
+            hashcode = hashlib.md5(hash_input.encode('utf-8')).hexdigest()
         # print(game_step)
         if game_step == Step.BEGIN_MULLIGAN:
             # Mulligan step
@@ -186,9 +203,6 @@ class SerpentHearthstoneGameAgent(GameAgent):
             # 2. Execute first attack action and wait (in case of deathrattle summons)
             # 3. Repeat steps 1-2 until no minions can attack anymore
             hand, turn, board, game_step, mana = game_reader.update_state()
-            if board.ally and board.enemy:
-                hash_input = board.ally.name + board.enemy.name
-                hashcode = hashlib.md5(hash_input.encode('utf-8')).hexdigest()
             chain = HearthstoneAI.simple_smorc(board)
             timeout = 0
             while chain and turn and timeout < 10:
@@ -219,9 +233,13 @@ class SerpentHearthstoneGameAgent(GameAgent):
             self.end_turn(mouse)
         
         playstate = game_reader.friendly_player.tags.get(GameTag.PLAYSTATE, None)
+        print(playstate)
         if playstate == PlayState.WON or playstate == PlayState.LOST:
+            print(hash)
+            print(hashcode)
             if hashcode != hash:
                 if playstate == PlayState.WON:
+                    self.concede(mouse, game_reader)
                     wins += 1
                 elif playstate == PlayState.LOST:
                     losses += 1

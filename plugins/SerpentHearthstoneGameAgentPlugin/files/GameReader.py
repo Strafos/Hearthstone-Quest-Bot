@@ -27,15 +27,13 @@ class GameReader:
         parser.flush()
 
         packet_tree = parser.games[-1]
-        try:
-            self.game = EntityTreeExporter(packet_tree).export().game
-        except:
-            time.sleep(5)
+        while True:
             try:
                 self.game = EntityTreeExporter(packet_tree).export().game
             except:
-                time.sleep(5)
-                self.game = EntityTreeExporter(packet_tree).export().game
+                continue
+            else:
+                break
         self.player_names = ['Strafos', 'strafos']
         self.card_data = self.get_card_data()
         self.friendly_player, self.enemy_player = self.read_players()
