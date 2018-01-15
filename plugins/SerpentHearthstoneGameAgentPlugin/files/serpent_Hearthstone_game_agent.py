@@ -190,6 +190,9 @@ class SerpentHearthstoneGameAgent(GameAgent):
             while chain and turn and len(board.ally_minions) != 7 and not game_end and timeout < 11:
                 playstate = game_reader.friendly_player.tags.get(GameTag.PLAYSTATE, None)
                 self.play_card(mouse, hand.size, chain[0])
+                print("Hand")
+                print(hand)
+                print(chain)
 
                 hp = chain[0] != -1
                 time.sleep(1)
@@ -221,6 +224,9 @@ class SerpentHearthstoneGameAgent(GameAgent):
             game_end = playstate == PlayState.WON or playstate == PlayState.LOST
             chain = HearthstoneAI.simple_smorc(board)
             while chain and turn and not game_end and timeout < 10:
+                print("Board")
+                print(board)
+                print(chain)
                 timeout += 1
                 self.attack(mouse, len(board.ally_minions), len(board.enemy_minions), chain[0])
                 time.sleep(1)

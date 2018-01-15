@@ -58,7 +58,7 @@ class Hand:
         if len(self.hand) == 0:
             return ''
         hand = sorted(self.hand, key=lambda card: card.position)
-        return ', '.join(card.name for card in hand)
+        return ', '.join((card.name, card.value) for card in hand)
 
     def add_card(self, card):
         self.hand.append(card)

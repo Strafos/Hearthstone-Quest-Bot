@@ -102,7 +102,7 @@ class HearthstoneAI:
     # Kills taunts efficiently by taking value trades and minimizing overkill    
     # board variable of type Board
     def smarter_smorc(board):
-        # Identify current taunters and attackers
+        # Identify enemy taunt minions
         taunters = []
         tot_def = 0
         for enemy in board.enemy_minions:
@@ -110,6 +110,7 @@ class HearthstoneAI:
                 taunters.append(enemy)
                 tot_def += enemy.health
 
+        # Identify ally attacking minions
         attackers = []
         tot_atk = 0
         for ally in board.ally_minions:
@@ -122,10 +123,11 @@ class HearthstoneAI:
 
         if len(taunters) == 0:
             chain = []
-            for i in range(k, len(attackers)):
+            for i in range(len(attackers)):
                 chain.append((attackers[i].position, 0))
             return chain
 
+        ## Find attack pattern that most efficiently kills
         def dfs(attackers, health, enemy_pos, idx, chain, best, best_chain):
             if health <= 0 and health > best:
                 return chain, health
@@ -151,10 +153,9 @@ class HearthstoneAI:
                 chain.pop()
             return best_chain, best
 
-        # for enemy in taunters:
+        # Optimize attack pattern for first taunt minion
         enemy = taunters[0]
         health = enemy.health
-        ## Find sum of attackers that is as close to enemy health as possible
         if board.weapon:
             attackers.append(board.weapon)
         attackers.sort(key= lambda card: card.attack)
