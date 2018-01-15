@@ -31,6 +31,7 @@ class GameReader:
             try:
                 self.game = EntityTreeExporter(packet_tree).export().game
             except:
+                print("Trapped")
                 continue
             else:
                 break
@@ -172,11 +173,12 @@ class GameReader:
             try:
                 self.game = EntityTreeExporter(packet_tree).export().game
             except:
+                print("Trapped")
                 continue
             else:
                 break
         t1 = time.time()
-        print("Log parser: " + str(t1-t0))
+        # print("Log parser: " + str(t1-t0))
 
         packet_tree = parser.games[-1]
         self.friendly_player, self.enemy_player = self.read_players()
@@ -192,8 +194,8 @@ class GameReader:
         t4 = time.time()
         mana = self.get_current_mana()
         t5 = time.time()
-        print("turn, board, hand, game_step, mana")
-        print(str(t1-t0) + ' ' + str(t2-t1) + ' '+ str(t3-t2) + ' ' + str(t4-t3) + ' ' + str(t5-t4))
+        # print("turn, board, hand, game_step, mana")
+        # print(str(t1-t0) + ' ' + str(t2-t1) + ' '+ str(t3-t2) + ' ' + str(t4-t3) + ' ' + str(t5-t4))
         return hand, turn, board, game_step, mana
 
     def read_players(self):
