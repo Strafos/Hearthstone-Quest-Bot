@@ -173,7 +173,6 @@ class SerpentHearthstoneGameAgent(GameAgent):
             mouse = None
         else:
             mouse = InputController(game = self.game)
-        AI = HearthstoneAI()
         game_reader = GameReader.GameReader("Windows")
 
         with io.open(r'Logs\wins.log', 'r') as f:
@@ -240,18 +239,25 @@ class SerpentHearthstoneGameAgent(GameAgent):
 
             timeout = 0
             hand, turn, board, game_step, mana = game_reader.update_state()
+            chain = HearthstoneAI.smarter_smorc(board)
+            space = len(board.ally_minions) == 7
             playstate = game_reader.friendly_player.tags.get(GameTag.PLAYSTATE, None)
             game_end = playstate == PlayState.WON or playstate == PlayState.LOST
-            chain = HearthstoneAI.smarter_smorc(board)
+
             print("Attack Chain: " + str(chain))
-            while chain and turn and not game_end and timeout < 10:
-                timeout += 1
+            while chain and turn and not game_end and space and timeout < 10:
+
                 self.attack(mouse, len(board.ally_minions), len(board.enemy_minions), chain[0])
-                game_end = playstate == PlayState.WON or playstate == PlayState.LOST
-                print("Game_end: " + str(game_end))
                 time.sleep(1)
+
+                # Update state
+                timeout += 1
                 hand, turn, board, game_step, mana = game_reader.update_state()
                 chain = HearthstoneAI.smarter_smorc(board)
+                space = len(board.ally_minions) == 7
+                playstate = game_reader.friendly_player.tags.get(GameTag.PLAYSTATE, None)
+                game_end = playstate == PlayState.WON or playstate == PlayState.LOST
+
                 print("Attack Chain: " + str(chain))
             t1 = time.time()
             print("ATTACK PHASE: " + str(t1-t0))
