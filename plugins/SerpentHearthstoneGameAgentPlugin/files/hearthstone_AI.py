@@ -30,7 +30,7 @@ class HearthstoneAI:
                     remaining_mana = mana + 1
                 else:
                     remaining_mana = mana - hand.hand[i].cost
-                to_play.append((hand.hand[i].position, hand.hand[i].cost))
+                to_play.append((hand.hand[i].position, hand.hand[i].cost, hand.hand[i].value))
                 value += hand.hand[i].value
                 if remaining_mana >= 0:
                     temp_chain, temp_max_value = dfs(hand, remaining_mana, i+1, max_value, value, to_play)
@@ -53,6 +53,8 @@ class HearthstoneAI:
             if tot_cost == mana:
                 # Don't use coin if not needed for play
                 del temp_chain[0]
+        
+        temp_chain = temp_chain.sort(key=lambda elem: elem[2], reverse=True)
         
         chain = []
         for elem in temp_chain:

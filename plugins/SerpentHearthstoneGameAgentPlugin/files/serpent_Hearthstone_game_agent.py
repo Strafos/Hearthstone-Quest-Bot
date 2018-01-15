@@ -176,12 +176,12 @@ class SerpentHearthstoneGameAgent(GameAgent):
             # Start new game
             self.start_game(mouse)
         elif turn:
+            t0 = time.time()
             ## CARD PLAY PHASE
             # 1. Calculate best chain of cards to play using HearthstoneAI.play_cards
             # 2. Play first card and wait in case of drawing card
             # 3. Repeat steps 1-2
             time.sleep(3)
-            t0 = time.time()
             chain, val= HearthstoneAI.play_card(hand, mana)
             playstate = game_reader.friendly_player.tags.get(GameTag.PLAYSTATE, None)
             game_end = playstate == PlayState.WON or playstate == PlayState.LOST
@@ -190,19 +190,20 @@ class SerpentHearthstoneGameAgent(GameAgent):
             while chain and turn and len(board.ally_minions) != 7 and not game_end and timeout < 11:
                 playstate = game_reader.friendly_player.tags.get(GameTag.PLAYSTATE, None)
                 self.play_card(mouse, hand.size, chain[0])
+
                 hp = chain[0] != -1
                 time.sleep(1)
+
                 t3 = time.time()
                 hand, turn, board, game_step, mana = game_reader.update_state(hp)
                 t4 = time.time()
                 print("update state time: " + str(t4-t3))
+
                 if mana == 0:
                     break
-                t7 = time.time()
                 chain, val = HearthstoneAI.play_card(hand, mana)
-                t8 = time.time()
-                print("play_card " + str(t8-t7))
                 timeout += 1
+
             t1 = time.time()
             print("PLAY PHASE")
             print(t1-t0)
