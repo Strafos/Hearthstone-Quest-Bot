@@ -154,10 +154,10 @@ class SerpentHearthstoneGameAgent(GameAgent):
             while game_step != Step.BEGIN_MULLIGAN:
                 self.start_game(mouse)
                 hand, turn, board, game_step, mana = game_reader.update_state()
+            time.sleep(.5)
             mouse.move(820, 464, .25)
             mouse.click()
-            time.sleep(.5)
-            mouse.move(412, 171, .3)
+            mouse.move(412, 171, .25)
             mouse.click()
             time.sleep(3)
 

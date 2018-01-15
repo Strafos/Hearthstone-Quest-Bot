@@ -118,7 +118,7 @@ class HearthstoneAI:
                 attackers.append(ally)
                 tot_atk += ally.attack
         
-        if board.weapon:
+        if board.weapon and not board.ally.exhausted:
             attackers.append(board.weapon)
 
         if len(taunters) == 0:

@@ -18,6 +18,8 @@ from tests.endgame_data import endgame
 from tests.midgame_data import midgame
 from tests.multi_taunt_data import taunts
 from tests.weapon_face import weapon_face
+from tests.before import before
+from tests.after import after
 
 def general_bot_test():
     AI = HearthstoneAI()
@@ -163,10 +165,14 @@ def multi_taunt():
     print(chain)
 
 def weapon():
-    game_reader = GameReader.GameReader("Linux", weapon_face)
+    game_reader = GameReader.GameReader("Linux", before)
     hand, turn, board, game_step, mana = game_reader.update_state()
 
     chain = HearthstoneAI.smarter_smorc(board)
-    print(chain)
+
+    game_reader = GameReader.GameReader("Linux", after)
+    hand, turn, board, game_step, mana = game_reader.update_state()
+
+    chain = HearthstoneAI.smarter_smorc(board)
 
 weapon()

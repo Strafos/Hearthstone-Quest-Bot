@@ -92,9 +92,10 @@ class BoardWeapon(BaseBoardCard):
         # self.card = card
 
 class BoardHero(BaseBoardCard):
-    def __init__(self, name, id, position, controller, health):
+    def __init__(self, name, id, position, controller, health, exhausted):
         super().__init__(name, id, position, controller)
         self.health = health
+        self.exhausted = exhausted
 
 class Board:
     def __init__(self, board_minions, heroes, weapons=None):
