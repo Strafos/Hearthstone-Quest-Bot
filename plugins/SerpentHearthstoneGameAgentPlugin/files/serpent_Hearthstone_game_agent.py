@@ -146,7 +146,8 @@ class SerpentHearthstoneGameAgent(GameAgent):
 
     def setup_play(self):
         mouse = InputController(game = self.game)
-        self.handle_start_menu(mouse, "PLAY")
+        self.start_game(mouse)
+        # self.handle_start_menu(mouse, "PLAY")
         # self.handle_deck_select(mouse, 13)
 
     def handle_play(self, game_frame):
