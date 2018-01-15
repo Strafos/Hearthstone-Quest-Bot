@@ -54,11 +54,18 @@ class HearthstoneAI:
                 # Don't use coin if not needed for play
                 del temp_chain[0]
         
+        # Sort by increasing value
         temp_chain.sort(key=lambda elem: elem[2], reverse=True)
         
         chain = []
+        coin = False
         for elem in temp_chain:
+            if elem[1] == 0 and elem[2] == 0:
+                coin_elem = elem
+                coin = True
             chain.append(elem[0])
+        if coin:
+            chain.insert(0, coin_elem)
 
         return chain, val
 

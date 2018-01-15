@@ -25,9 +25,10 @@ class HandMinion(BaseHandCard):
 
 class HandSpell(BaseHandCard):
     def __init__(self, name, id, cost, position):
-        # print(position)
         super().__init__(name, id, cost, position)
-        self.value = 2*self.cost + .5
+        self.value = 2*self.cost
+        if name != "The Coin":
+            self.value += 1
 
 class HandWeapon(BaseHandCard):
     def __init__(self, name, id, cost, position, attack, durability):
