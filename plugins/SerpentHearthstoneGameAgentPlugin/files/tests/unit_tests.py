@@ -134,6 +134,7 @@ def board_test():
     print(board.weapon.name)
     print(board.weapon.position)
 
+    print(board)
     # print(AI.smarter_smorc(board))
 
 def play_phase_test():
@@ -162,3 +163,4 @@ def multi_taunt():
     print(chain)
 
 multi_taunt()
+board_test()

@@ -35,7 +35,7 @@ class HandWeapon(BaseHandCard):
         super().__init__(name, id, cost, position)
         self.attack = attack
         self.durability = durability
-        self.value = self.attack * self.durability
+        self.value = self.attack * self.durability * 1.5
 
 class HeroPower():
     # Hunter HP
