@@ -14,7 +14,7 @@ class HandMinion(BaseHandCard):
         self.value = self.calc_value()
     
     def calc_value(self):
-        value = self.attack*1.1 + self.health # + 1 To weight playing more cards
+        value = self.attack*1.3 + self.health
         if self.mechanics:
             for mechanic in self.mechanics:
                 if mechanic == "CHARGE":
