@@ -13,6 +13,10 @@ import entities
 from hearthstone_AI import HearthstoneAI
 import GameReader
 
+from board_state_data import board_state
+from endgame_data import endgame
+from midgame_data import midgame
+
 def general_bot_test():
     AI = HearthstoneAI()
     game_reader = GameReader.GameReader("Linux")
@@ -121,3 +125,13 @@ def str_test():
 
     print(hand)
     print(board)
+
+def board_test():
+    AI = HearthstoneAI()
+    game_reader = GameReader.GameReader("Linux", board_state)
+    hand, turn, board, game_step, mana = game_reader.update_state()
+
+    print(board)
+    print(AI.smarter_smorc(board))
+
+board_test()

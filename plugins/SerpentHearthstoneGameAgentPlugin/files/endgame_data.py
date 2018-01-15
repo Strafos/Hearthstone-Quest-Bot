@@ -1,4 +1,4 @@
-DATA = """D 19:40:58.6606238 GameState.DebugPrintPowerList() - Count=110
+endgame = """D 19:40:58.6606238 GameState.DebugPrintPowerList() - Count=110
 D 19:40:58.6686642 GameState.DebugPrintPower() - CREATE_GAME
 D 19:40:58.6686642 GameState.DebugPrintPower() -     GameEntity EntityID=1
 D 19:40:58.6721294 GameState.DebugPrintPower() -         tag=CARDTYPE value=GAME

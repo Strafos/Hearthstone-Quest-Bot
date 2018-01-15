@@ -8,12 +8,11 @@ import io
 import time
 
 import entities
-from board_state import DATA
-# from endgame_data import DATA
+from board_state_data import board_state
 
 # Reads information from game logs using hslog and relays to the GameAgent
 class GameReader:
-    def __init__(self, os):
+    def __init__(self, os, linux_log=board_state):
         self.os = os
         parser = LogParser()
         if self.os == "Windows":
@@ -23,7 +22,8 @@ class GameReader:
                 self.logs = ''.join(lines)
             parser.read(io.StringIO(self.logs))
         elif self.os == "Linux":
-            parser.read(io.StringIO(DATA))
+            parser.read(io.StringIO(linux_log))
+            self.linux_log = linux_log
         parser.flush()
 
         packet_tree = parser.games[-1]
@@ -165,7 +165,7 @@ class GameReader:
                 self.logs = ''.join(lines)
             parser.read(io.StringIO(self.logs))
         elif self.os == "Linux":
-            parser.read(io.StringIO(DATA))
+            parser.read(io.StringIO(self.linux_log))
         parser.flush()
 
         packet_tree = parser.games[-1]
