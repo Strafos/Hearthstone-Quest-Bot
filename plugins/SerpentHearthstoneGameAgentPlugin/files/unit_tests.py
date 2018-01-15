@@ -13,10 +13,11 @@ import entities
 from hearthstone_AI import HearthstoneAI
 import GameReader
 
-from board_state_data import board_state
-from endgame_data import endgame
-from midgame_data import midgame
-from multi_taunt_data import taunts
+from tests.board_state_data import board_state
+from tests.endgame_data import endgame
+from tests.midgame_data import midgame
+from tests.multi_taunt_data import taunts
+from tests.weapon_face import weapon_face
 
 def general_bot_test():
     AI = HearthstoneAI()
@@ -155,12 +156,17 @@ def mana_test():
     print(mana)
 
 def multi_taunt():
-    AI = HearthstoneAI()
     game_reader = GameReader.GameReader("Linux", taunts)
     hand, turn, board, game_step, mana = game_reader.update_state()
 
     chain = HearthstoneAI.smarter_smorc(board)
     print(chain)
 
-multi_taunt()
-board_test()
+def weapon():
+    game_reader = GameReader.GameReader("Linux", weapon_face)
+    hand, turn, board, game_step, mana = game_reader.update_state()
+
+    chain = HearthstoneAI.smarter_smorc(board)
+    print(chain)
+
+weapon()

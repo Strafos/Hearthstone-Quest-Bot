@@ -1,4 +1,4 @@
-D 19:30:06.2207088 GameState.DebugPrintPowerList() - Count=111
+weapon_face = """D 19:30:06.2207088 GameState.DebugPrintPowerList() - Count=111
 D 19:30:06.2242111 GameState.DebugPrintPower() - CREATE_GAME
 D 19:30:06.2242111 GameState.DebugPrintPower() -     GameEntity EntityID=1
 D 19:30:06.2277130 GameState.DebugPrintPower() -         tag=CARDTYPE value=GAME
@@ -27174,3 +27174,4 @@ D 19:47:37.1113962 PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=Effor
 D 19:47:37.1113962 PowerTaskList.DebugDump() - Block End=(null)
 D 19:47:37.1113962 PowerProcessor.PrepareHistoryForCurrentTaskList() - m_currentTaskList=340
 D 19:47:37.1113962 PowerProcessor.EndCurrentTaskList() - m_currentTaskList=340
+""".strip()

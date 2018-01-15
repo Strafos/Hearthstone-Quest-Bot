@@ -115,6 +115,9 @@ class HearthstoneAI:
             if ally.attack > 0 and not ally.exhausted:
                 attackers.append(ally)
                 tot_atk += ally.attack
+        
+        if board.weapon:
+            attackers.append(board.weapon)
 
         if len(taunters) == 0:
             chain = []

@@ -245,7 +245,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
             game_end = playstate == PlayState.WON or playstate == PlayState.LOST
 
             print("Attack Chain: " + str(chain))
-            while chain and turn and not game_end and space and timeout < 10:
+            while chain and turn and not game_end and not space and timeout < 10:
 
                 self.attack(mouse, len(board.ally_minions), len(board.enemy_minions), chain[0])
                 time.sleep(1)

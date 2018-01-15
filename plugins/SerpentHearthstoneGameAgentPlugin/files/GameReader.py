@@ -102,7 +102,6 @@ class GameReader:
                         card_info['durability'])
                     hand.add_card(weapon)
         if hp and board.enemy:
-            print("Enemy health: " + str(board.enemy.health))
             hero_power = entities.HeroPower('Hero Power', 2, -2, 'Hunter', board.enemy.health)
             hand.add_card(hero_power)
         hand.sort_by_cost()
