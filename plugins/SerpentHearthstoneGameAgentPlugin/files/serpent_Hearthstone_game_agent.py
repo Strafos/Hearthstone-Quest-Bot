@@ -225,7 +225,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
                 self.attack(mouse, len(board.ally_minions), len(board.enemy_minions), chain[0])
                 time.sleep(1)
                 hand, turn, board, game_step, mana = game_reader.update_state()
-                chain = HearthstoneAI.simple_smorc(board)
+                chain = HearthstoneAI.smarter_smorc(board)
             t1 = time.time()
             print("ATTACK PHASE: " + str(t1-t0))
 

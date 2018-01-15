@@ -54,7 +54,7 @@ class HearthstoneAI:
                 # Don't use coin if not needed for play
                 del temp_chain[0]
         
-        temp_chain = temp_chain.sort(key=lambda elem: elem[2], reverse=True)
+        temp_chain.sort(key=lambda elem: elem[2], reverse=True)
         
         chain = []
         for elem in temp_chain:

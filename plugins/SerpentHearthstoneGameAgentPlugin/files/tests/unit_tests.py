@@ -135,4 +135,12 @@ def board_test():
 
     # print(AI.smarter_smorc(board))
 
-board_test()
+def play_phase_test():
+    AI = HearthstoneAI()
+    game_reader = GameReader.GameReader("Linux", board_state)
+    hand, turn, board, game_step, mana = game_reader.update_state()
+    chain, val = HearthstoneAI.play_card(hand, mana)
+    print(chain)
+
+
+play_phase_test()
