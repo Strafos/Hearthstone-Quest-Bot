@@ -145,6 +145,9 @@ def play_phase_test():
     print(t2-t1)
     print(chain)
 
+def mana_test():
+    AI = HearthstoneAI()
+    game_reader = GameReader.GameReader("Linux", board_state)
+    hand, turn, board, game_step, mana = game_reader.update_state()
 
-str_test()
-play_phase_test()
+    print(mana)

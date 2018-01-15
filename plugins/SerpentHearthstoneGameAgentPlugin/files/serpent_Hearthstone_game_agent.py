@@ -23,7 +23,9 @@ class SerpentHearthstoneGameAgent(GameAgent):
         self.frame_handler_setups["PLAY"] = self.setup_play
         self.analytics_client = None
 
-    def handle_start_menu(self, mouse, option):
+    def handle_start_menu(self, mouse, option, test=False):
+        if not mouse:
+            return
         menu_items = locations.menu_items
         mouse.click()
         mouse.move(menu_items[option][0], menu_items[option][1], .25)
@@ -31,6 +33,8 @@ class SerpentHearthstoneGameAgent(GameAgent):
         time.sleep(2)
     
     def handle_deck_select(self, mouse, option):
+        if not mouse:
+            return
         items = [
             (0, 0), 
             (208, 127), (313, 130), (420, 127), # 1 2 3
@@ -50,12 +54,13 @@ class SerpentHearthstoneGameAgent(GameAgent):
             mouse.move(prev_page[0], prev_page[1], .25)
             mouse.click()
 
-
         selected_option = items[option]
         mouse.move(selected_option[0], selected_option[1], .25)
         mouse.click()
     
     def end_turn(self, mouse, mull=False):
+        if not mouse:
+            return
         if mull:
             mouse.move(432, 369, .25)
         else:
@@ -63,9 +68,11 @@ class SerpentHearthstoneGameAgent(GameAgent):
         mouse.click()
     
     def mull_card(self, mouse, hand, mull):
+        if not mouse:
+            return
         card_location = locations.mulligan_locations
 
-        if hand.size == 4:
+        if hand.size == 3:
             hand_loc = card_location[0]
         else:
             hand_loc = card_location[1]
@@ -74,10 +81,9 @@ class SerpentHearthstoneGameAgent(GameAgent):
             mouse.click()
         self.end_turn(mouse, True)
 
-    # attack_pos examples: 
-    # (5, 3)
-    # (2, 0)
     def attack(self, mouse, ally_board_size, enemy_board_size, attack_pos):
+        if not mouse:
+            return
         card_locations_x = locations.board_locations_x
         enemy_y = 170
         ally_y = 258
@@ -103,6 +109,8 @@ class SerpentHearthstoneGameAgent(GameAgent):
         mouse.click()
 
     def play_card(self, mouse, handsize, card_pos):
+        if not mouse:
+            return
         hand_card_locations = locations.hand_card_locations
         if card_pos == -1:
             self.hero_power(mouse)
@@ -116,21 +124,29 @@ class SerpentHearthstoneGameAgent(GameAgent):
         self.move_to_board(mouse)
     
     def start_game(self, mouse):
+        if not mouse:
+            return
         mouse.move(612, 385, .25)
         mouse.click()
         time.sleep(3)
     
     def move_to_board(self, mouse):
+        if not mouse:
+            return
         board = (235, 159)
         mouse.move(board[0], board[1], .2)
         mouse.click()
     
     def hero_power(self, mouse):
+        if not mouse:
+            return
         loc = locations.hero_power_loc
         mouse.move(loc[0], loc[1], .25)
         mouse.click()
 
     def concede(self, mouse, game_reader):
+        if not mouse:
+            return
         if not mouse:
             return
         for i in range(1):
@@ -153,7 +169,10 @@ class SerpentHearthstoneGameAgent(GameAgent):
         # self.handle_deck_select(mouse, 13)
 
     def handle_play(self, game_frame, test=False):
-        mouse = InputController(game = self.game)
+        if test:
+            mouse = None
+        else:
+            mouse = InputController(game = self.game)
         AI = HearthstoneAI()
         game_reader = GameReader.GameReader("Windows")
 
@@ -230,7 +249,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
                 self.attack(mouse, len(board.ally_minions), len(board.enemy_minions), chain[0])
                 game_end = playstate == PlayState.WON or playstate == PlayState.LOST
                 print("Game_end: " + str(game_end))
-                time.sleep(1)
+                # time.sleep(1)
                 hand, turn, board, game_step, mana = game_reader.update_state()
                 chain = HearthstoneAI.smarter_smorc(board)
                 print("Attack Chain: " + str(chain))
@@ -251,7 +270,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
                 elif playstate == PlayState.LOST:
                     losses += 1
                 total += 1
-                print("Win ratio: " + str(wins/total))
+                # print("Win ratio: " + str(wins/total))
                 with io.open(r'Logs/wins.log', 'w') as f:
                     f.write('Wins: ' + str(wins) + '\n')
                     f.write('Losses: ' + str(losses) + '\n')

@@ -46,7 +46,7 @@ class HeroPower():
         self.value = 0
         self.hero = hero
         if enemy_health <= 15:
-            self.value += 1.2**(15 - enemy_health)
+            self.value = 1.2**(15 - enemy_health)
 
 class Hand:
     def __init__(self):
