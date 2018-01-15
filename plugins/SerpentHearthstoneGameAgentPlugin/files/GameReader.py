@@ -155,6 +155,7 @@ class GameReader:
 
     ## Update Game object by rereading logs
     def update_state(self, hp=1):
+        t0 = time.time()
         parser = LogParser()
         if self.os == "Windows":
             log_dir = r"C:\Program Files (x86)\Hearthstone\Logs\Power.log"
@@ -167,17 +168,32 @@ class GameReader:
         parser.flush()
 
         packet_tree = parser.games[-1]
-        try:
-            self.game = EntityTreeExporter(packet_tree).export().game
-        except:
-            self.game = EntityTreeExporter(packet_tree).export().game
+        while True:
+            try:
+                self.game = EntityTreeExporter(packet_tree).export().game
+            except:
+                continue
+            else:
+                break
+        t1 = time.time()
+        print("Log parser: " + str(t1-t0))
+
+        packet_tree = parser.games[-1]
         self.friendly_player, self.enemy_player = self.read_players()
 
+        t0 = time.time()
         turn = self.get_current_player().name in self.player_names
+        t1 = time.time()
         board = self.get_current_board()
+        t2 = time.time()
         hand = self.get_current_hand(hp, board)
+        t3 = time.time()
         game_step = self.get_game_step()
+        t4 = time.time()
         mana = self.get_current_mana()
+        t5 = time.time()
+        print("turn, board, hand, game_step, mana")
+        print(str(t1-t0) + ' ' + str(t2-t1) + ' '+ str(t3-t2) + ' ' + str(t4-t3) + ' ' + str(t5-t4))
         return hand, turn, board, game_step, mana
 
     def read_players(self):

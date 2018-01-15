@@ -183,6 +183,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
             # 2. Play first card and wait in case of drawing card
             # 3. Repeat steps 1-2
             time.sleep(2)
+            t0 = time.time()
             chain, val= HearthstoneAI.play_card(hand, mana)
             timeout = 0
             hp = 1
@@ -190,17 +191,27 @@ class SerpentHearthstoneGameAgent(GameAgent):
                 self.play_card(mouse, hand.size, chain[0])
                 hp = chain[0] != -1
                 time.sleep(1)
+                t3 = time.time()
                 hand, turn, board, game_step, mana = game_reader.update_state(hp)
+                t4 = time.time()
+                print("update state time: " + str(t4-t3))
                 if mana == 0:
                     break
+                t7 = time.time()
                 chain, val = HearthstoneAI.play_card(hand, mana)
+                t8 = time.time()
+                print("play_card " + str(t8-t7))
                 timeout += 1
+            t1 = time.time()
+            print("PLAY PHASE")
+            print(t1-t0)
             
             ## ATTACK PHASE
             # Attacking strategy:
             # 1. Calculate chain of attack actions
             # 2. Execute first attack action and wait (in case of deathrattle summons)
             # 3. Repeat steps 1-2 until no minions can attack anymore
+            t0 = time.time()
             hand, turn, board, game_step, mana = game_reader.update_state()
             chain = HearthstoneAI.simple_smorc(board)
             timeout = 0
@@ -210,31 +221,33 @@ class SerpentHearthstoneGameAgent(GameAgent):
                 time.sleep(1)
                 hand, turn, board, game_step, mana = game_reader.update_state()
                 chain = HearthstoneAI.simple_smorc(board)
+            t1 = time.time()
+            print("ATTACK PHASE: " + str(t1-t0))
 
             ## Second play phase (in case board was full before)
-            chain, val= HearthstoneAI.play_card(hand, mana)
-            timeout = 0
-            hp = 1
-            while chain and turn and len(board.ally_minions) != 7 and timeout < 11:
-                self.play_card(mouse, hand.size, chain[0])
-                hp = chain[0] != -1
-                time.sleep(1)
-                hand, turn, board, game_step, mana = game_reader.update_state(hp)
-                if mana == 0:
-                    break
-                chain, val = HearthstoneAI.play_card(hand, mana)
-                timeout += 1
-            chain, val= HearthstoneAI.play_card(hand, mana)
+            # chain, val= HearthstoneAI.play_card(hand, mana)
+            # timeout = 0
+            # hp = 1
+            # while chain and turn and len(board.ally_minions) != 7 and timeout < 11:
+            #     self.play_card(mouse, hand.size, chain[0])
+            #     hp = chain[0] != -1
+            #     time.sleep(1)
+            #     hand, turn, board, game_step, mana = game_reader.update_state(hp)
+            #     if mana == 0:
+            #         break
+            #     chain, val = HearthstoneAI.play_card(hand, mana)
+            #     timeout += 1
+            # chain, val= HearthstoneAI.play_card(hand, mana)
             
-            if mana >= 2:
+            if mana >= 2 and hp:
                 self.hero_power(mouse)
 
             self.end_turn(mouse)
         
         playstate = game_reader.friendly_player.tags.get(GameTag.PLAYSTATE, None)
         if playstate == PlayState.WON or playstate == PlayState.LOST:
-            print(hash)
-            print(hashcode)
+            # print(hash)
+            # print(hashcode)
             if hashcode != hash:
                 if playstate == PlayState.WON:
                     self.concede(mouse, game_reader)
@@ -242,7 +255,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
                 elif playstate == PlayState.LOST:
                     losses += 1
                 total += 1
-                print("Win ratio: " + str(wins/total))
+                # print("Win ratio: " + str(wins/total))
                 with io.open(r'Logs/wins.log', 'w') as f:
                     f.write('Wins: ' + str(wins) + '\n')
                     f.write('Losses: ' + str(losses) + '\n')

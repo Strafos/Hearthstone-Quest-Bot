@@ -5,7 +5,6 @@ class HearthstoneAI:
     @staticmethod
     def get_mulligan(hand):
         mull = []
-        print(len(hand))
         for card in hand:
             if len(hand) == 4 and card.cost >= 3:
                 mull.append(card.position)
