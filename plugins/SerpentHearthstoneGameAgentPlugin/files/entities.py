@@ -100,7 +100,7 @@ class Board:
         ally = None
         enemy = None
         for hero in heroes:
-            if hero.controller.name.lower() == 'strafos':
+            if hero.controller.name and hero.controller.name.lower() == 'strafos':
                 ally = hero
             else:
                 enemy = hero
