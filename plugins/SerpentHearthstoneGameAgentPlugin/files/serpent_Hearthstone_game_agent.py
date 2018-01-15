@@ -188,7 +188,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
             game_end = playstate == PlayState.WON or playstate == PlayState.LOST
             timeout = 0
             hp = 1
-            while chain and turn and len(board.ally_minions) != 7 and not game_end timeout < 11:
+            while chain and turn and len(board.ally_minions) != 7 and not game_end and timeout < 11:
                 playstate = game_reader.friendly_player.tags.get(GameTag.PLAYSTATE, None)
                 self.play_card(mouse, hand.size, chain[0])
                 hp = chain[0] != -1
@@ -214,11 +214,12 @@ class SerpentHearthstoneGameAgent(GameAgent):
             # 2. Execute first attack action and wait (in case of deathrattle summons)
             # 3. Repeat steps 1-2 until no minions can attack anymore
             t0 = time.time()
+
+            timeout = 0
             hand, turn, board, game_step, mana = game_reader.update_state()
             playstate = game_reader.friendly_player.tags.get(GameTag.PLAYSTATE, None)
             game_end = playstate == PlayState.WON or playstate == PlayState.LOST
             chain = HearthstoneAI.simple_smorc(board)
-            timeout = 0
             while chain and turn and not game_end and timeout < 10:
                 timeout += 1
                 self.attack(mouse, len(board.ally_minions), len(board.enemy_minions), chain[0])
