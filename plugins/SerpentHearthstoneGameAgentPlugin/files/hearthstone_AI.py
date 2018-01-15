@@ -115,7 +115,7 @@ class HearthstoneAI:
                 chain.append((attackers[i].position, 0))
             return chain
 
-        def dfs(attackers, health, enemy_pos, idx, chain, best):
+        def dfs(attackers, health, enemy_pos, idx, chain, best, best_chain):
             if health <= 0 and health > best:
                 return chain, health
 
@@ -127,9 +127,9 @@ class HearthstoneAI:
                 del new_attackers[i]
 
                 if health > best:
-                    temp_chain, temp_best = dfs(new_attackers, health, enemy_pos, i+1, chain, best)
+                    temp_chain, temp_best = dfs(new_attackers, health, enemy_pos, i+1, chain, best, best_chain)
                     if temp_best > best:
-                        chain = temp_chain
+                        best_chain = temp_chain[:]
                         best = temp_best
                 else:
                     health += attackers[i].attack
@@ -138,15 +138,12 @@ class HearthstoneAI:
 
                 health += attackers[i].attack
                 chain.pop()
-            return chain, best
+            return best_chain, best
 
         # for enemy in taunters:
         enemy = taunters[0]
         health = enemy.health
         ## Find sum of attackers that is as close to enemy health as possible
         attackers.sort(key= lambda card: card.attack)
-        print(attackers)
-        for i in attackers:
-            print(i.exhausted)
-        chain, best = dfs(attackers, health, enemy.position, 0, [], -1000)
+        chain, best = dfs(attackers, health, enemy.position, 0, [], -1000, [])
         return chain

@@ -131,7 +131,6 @@ def board_test():
     game_reader = GameReader.GameReader("Linux", board_state)
     hand, turn, board, game_step, mana = game_reader.update_state()
 
-    print(board)
     print(AI.smarter_smorc(board))
 
 board_test()

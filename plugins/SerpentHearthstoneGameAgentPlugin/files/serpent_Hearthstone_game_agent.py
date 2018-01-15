@@ -246,7 +246,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
                 elif playstate == PlayState.LOST:
                     losses += 1
                 total += 1
-                # print("Win ratio: " + str(wins/total))
+                print("Win ratio: " + str(wins/total))
                 with io.open(r'Logs/wins.log', 'w') as f:
                     f.write('Wins: ' + str(wins) + '\n')
                     f.write('Losses: ' + str(losses) + '\n')

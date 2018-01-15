@@ -8,7 +8,7 @@ import io
 import time
 
 import entities
-from board_state_data import board_state
+from tests.board_state_data import board_state
 
 # Reads information from game logs using hslog and relays to the GameAgent
 class GameReader:
