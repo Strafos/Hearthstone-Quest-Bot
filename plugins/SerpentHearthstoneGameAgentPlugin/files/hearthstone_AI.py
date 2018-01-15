@@ -104,11 +104,9 @@ class HearthstoneAI:
     def smarter_smorc(board):
         # Identify enemy taunt minions
         taunters = []
-        tot_def = 0
         for enemy in board.enemy_minions:
             if enemy.taunt:
                 taunters.append(enemy)
-                tot_def += enemy.health
 
         # Identify ally attacking minions
         attackers = []
@@ -117,9 +115,6 @@ class HearthstoneAI:
             if ally.attack > 0 and not ally.exhausted:
                 attackers.append(ally)
                 tot_atk += ally.attack
-
-        if tot_def > tot_atk:
-            return []
 
         if len(taunters) == 0:
             chain = []
@@ -157,6 +152,8 @@ class HearthstoneAI:
         taunters.sort(key=lambda card: card.health)
         enemy = taunters[0]
         health = enemy.health
+        if health > tot_atk:
+            return []
         if board.weapon:
             attackers.append(board.weapon)
         attackers.sort(key= lambda card: card.attack)

@@ -249,7 +249,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
                 self.attack(mouse, len(board.ally_minions), len(board.enemy_minions), chain[0])
                 game_end = playstate == PlayState.WON or playstate == PlayState.LOST
                 print("Game_end: " + str(game_end))
-                # time.sleep(1)
+                time.sleep(.5)
                 hand, turn, board, game_step, mana = game_reader.update_state()
                 chain = HearthstoneAI.smarter_smorc(board)
                 print("Attack Chain: " + str(chain))
