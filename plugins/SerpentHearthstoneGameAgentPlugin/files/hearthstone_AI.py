@@ -151,28 +151,5 @@ class HearthstoneAI:
         if board.weapon:
             attackers.append(board.weapon)
         attackers.sort(key= lambda card: card.attack)
-        def dfs(attackers, health, enemy_pos, idx, chain, best, best_chain):
-            if health <= 0 and health > best:
-                return chain, health
-
-            for i in range(idx, len(attackers)):
-                health -= attackers[i].attack
-                chain.append((attackers[i].position, enemy_pos))
-
-                new_attackers = attackers[:]
-                del new_attackers[i]
-
-                if health > best:
-                    temp_chain, temp_best = dfs(new_attackers, health, enemy_pos, i+1, chain, best, best_chain)
-                    if temp_best > best:
-                        best_chain = temp_chain[:]
-                        best = temp_best
-                else:
-                    health += attackers[i].attack
-                    chain.pop()
-                    break
-
-                health += attackers[i].attack
-                chain.pop()
-            return best_chain, best        chain, best = dfs(attackers, health, enemy.position, 0, [], -1000, [])
+        chain, best = dfs(attackers, health, enemy.position, 0, [], -1000, [])
         return chain
