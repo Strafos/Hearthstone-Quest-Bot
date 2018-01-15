@@ -160,13 +160,12 @@ class SerpentHearthstoneGameAgent(GameAgent):
             for line in f.readlines():
                 string = line.split(' ')
                 data.append((string[-1].strip()))
-            wins, losses, total, hash = (int)(data[0]), (int)(data[1]), (int)(data[2]), data[3]
+            wins, losses, total, prev_oppo = (int)(data[0]), (int)(data[1]), (int)(data[2]), data[3]
 
-        hashcode = hash
+        curr_oppo = prev_oppo
         hand, turn, board, game_step, mana = game_reader.update_state()
-        if board.ally and board.enemy:
-            hash_input = board.ally.name + board.enemy.name
-            hashcode = hashlib.md5(hash_input.encode('utf-8')).hexdigest()
+        if board.enemy:
+            curr_oppo = board.enemy.name
         # print(game_step)
         if game_step == Step.BEGIN_MULLIGAN:
             # Mulligan step
@@ -236,9 +235,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
         
         playstate = game_reader.friendly_player.tags.get(GameTag.PLAYSTATE, None)
         if playstate == PlayState.WON or playstate == PlayState.LOST:
-            # print(hash)
-            # print(hashcode)
-            if hashcode != hash:
+            if prev_oppo != curr_oppo:
                 if playstate == PlayState.WON:
                     self.concede(mouse, game_reader)
                     wins += 1
@@ -250,4 +247,4 @@ class SerpentHearthstoneGameAgent(GameAgent):
                     f.write('Wins: ' + str(wins) + '\n')
                     f.write('Losses: ' + str(losses) + '\n')
                     f.write('Total: ' + str(total) + '\n')
-                    f.write('Hash: ' + hashcode + '\n')
+                    f.write('Previous Opponnent: ' + curr_oppo + '\n')
