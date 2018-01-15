@@ -146,9 +146,8 @@ class SerpentHearthstoneGameAgent(GameAgent):
 
     def setup_play(self):
         mouse = InputController(game = self.game)
-        return
         self.handle_start_menu(mouse, "PLAY")
-        self.handle_deck_select(mouse, 13)
+        # self.handle_deck_select(mouse, 13)
 
     def handle_play(self, game_frame):
         mouse = InputController(game = self.game)
@@ -233,7 +232,6 @@ class SerpentHearthstoneGameAgent(GameAgent):
             self.end_turn(mouse)
         
         playstate = game_reader.friendly_player.tags.get(GameTag.PLAYSTATE, None)
-        print(playstate)
         if playstate == PlayState.WON or playstate == PlayState.LOST:
             print(hash)
             print(hashcode)
