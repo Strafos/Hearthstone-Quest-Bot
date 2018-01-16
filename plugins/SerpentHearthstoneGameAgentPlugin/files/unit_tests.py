@@ -201,5 +201,3 @@ def mid_gamemana():
     chain, val = HearthstoneAI.play_card(hand, mana)
     print(chain)
     print(val)
-
-mid_gamemana()
