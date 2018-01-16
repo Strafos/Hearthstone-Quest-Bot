@@ -83,6 +83,7 @@ class BoardMinion(BaseBoardCard):
         self.taunt = taunt
         self.exhausted = exhausted
         # self.card = card
+    
 
 class BoardWeapon(BaseBoardCard):
     def __init__(self, name, id, position, controller, attack, durability):

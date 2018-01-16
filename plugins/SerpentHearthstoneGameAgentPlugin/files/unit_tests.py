@@ -161,6 +161,10 @@ def mana_test():
 def multi_taunt():
     game_reader = GameReader.GameReader("Linux", taunts)
     hand, turn, board, game_step, mana = game_reader.update_state()
+    print(board)
+    for i in board.ally_minions:
+        print(i)
+        print(i.exhausted)
 
     chain = HearthstoneAI.smarter_smorc(board)
     print(chain)
@@ -189,4 +193,4 @@ def coin():
 
     print(mana)
 
-weapon()
+multi_taunt()
