@@ -185,9 +185,11 @@ class SerpentHearthstoneGameAgent(GameAgent):
         if board.enemy:
             curr_oppo = board.enemy.name
         if game_step == Step.BEGIN_MULLIGAN:
-            time.sleep(2)
+            time.sleep(3)
             mull = HearthstoneAI.get_mulligan(hand.hand)
             self.mull_card(mouse, hand, mull)
+            while game_step == Step.BEGIN_MULLIGAN:
+                hand, turn, board, game_step, mana = game_reader.update_state()
         elif game_step == Step.FINAL_GAMEOVER:
             self.start_game(mouse)
         elif turn:

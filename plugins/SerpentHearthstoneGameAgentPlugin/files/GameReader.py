@@ -150,7 +150,7 @@ class GameReader:
                                 None,
                                 board_card.controller,
                                 tags.get(GameTag.HEALTH, 30) - tags.get(GameTag.DAMAGE, 0),
-                                tags.get(GameTag.EXHAUSTED, 1)
+                                tags.get(GameTag.EXHAUSTED, 0)
                             )
                             heroes.append(hero)
         return entities.Board(minions, heroes, weapons)

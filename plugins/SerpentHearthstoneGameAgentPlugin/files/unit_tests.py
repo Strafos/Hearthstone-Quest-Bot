@@ -170,11 +170,13 @@ def weapon():
     hand, turn, board, game_step, mana = game_reader.update_state()
 
     chain = HearthstoneAI.smarter_smorc(board)
+    print(chain)
 
     game_reader = GameReader.GameReader("Linux", after)
     hand, turn, board, game_step, mana = game_reader.update_state()
 
     chain = HearthstoneAI.smarter_smorc(board)
+    print(chain)
 
 def coin():
     game_reader = GameReader.GameReader("Linux", coins)
@@ -187,4 +189,4 @@ def coin():
 
     print(mana)
 
-coin()
+weapon()
