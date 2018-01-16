@@ -13,6 +13,7 @@ import entities
 from hearthstone_AI import HearthstoneAI
 import GameReader
 
+from tests.coin_state import coins
 from tests.board_state_data import board_state
 from tests.endgame_data import endgame
 from tests.midgame_data import midgame
@@ -175,4 +176,15 @@ def weapon():
 
     chain = HearthstoneAI.smarter_smorc(board)
 
-weapon()
+def coin():
+    game_reader = GameReader.GameReader("Linux", coins)
+    hand, turn, board, game_step, mana = game_reader.update_state()
+
+    game = game_reader.get_game()
+    players = game.players
+    print(players)
+    me = players[0]
+
+    print(mana)
+
+coin()

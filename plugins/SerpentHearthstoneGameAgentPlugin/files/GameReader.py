@@ -201,5 +201,5 @@ class GameReader:
     def get_current_mana(self):
         if self.friendly_player:
             tags = self.friendly_player.tags
-            return tags.get(GameTag.RESOURCES, 0) - tags.get(GameTag.RESOURCES_USED, 0)
+            return tags.get(GameTag.RESOURCES, 0) - tags.get(GameTag.RESOURCES_USED, 0) + tags.get(GameTag.TEMP_RESOURCES, 0)
         return 0

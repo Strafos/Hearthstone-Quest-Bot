@@ -239,12 +239,11 @@ class SerpentHearthstoneGameAgent(GameAgent):
             timeout = 0
             hand, turn, board, game_step, mana = game_reader.update_state()
             chain = HearthstoneAI.smarter_smorc(board)
-            space = len(board.ally_minions) == 7
             playstate = game_reader.friendly_player.tags.get(GameTag.PLAYSTATE, None)
             game_end = playstate == PlayState.WON or playstate == PlayState.LOST
 
             print("Attack Chain: " + str(chain))
-            while chain and turn and not game_end and not space and timeout < 10:
+            while chain and turn and not game_end and timeout < 10:
 
                 self.attack(mouse, len(board.ally_minions), len(board.enemy_minions), chain[0])
                 time.sleep(1)
