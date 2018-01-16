@@ -189,10 +189,10 @@ class SerpentHearthstoneGameAgent(GameAgent):
             hp = 1
             while chain and turn and len(board.ally_minions) != 7 and not game_end and timeout < 11:
                 playstate = game_reader.friendly_player.tags.get(GameTag.PLAYSTATE, None)
-                self.play_card(mouse, hand.size, chain[0])
                 print("Hand")
                 print(hand)
                 print(chain)
+                self.play_card(mouse, hand.size, chain[0])
 
                 hp = chain[0] != -1
                 time.sleep(1)

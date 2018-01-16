@@ -65,7 +65,7 @@ class HearthstoneAI:
                 coin = True
             chain.append(elem[0])
         if coin:
-            chain.insert(0, coin_elem)
+            chain.insert(0, coin_elem[0])
 
         return chain, val
 
