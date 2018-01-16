@@ -27,7 +27,7 @@ class HearthstoneAI:
             if mana >= 0 and value > max_value:
                 chain = to_play[:]
                 max_value = value
-            for i in range(idx, hand.size):
+            for i in range(idx, hand.size+1):
                 if hand.hand[i].name == "The Coin":
                     remaining_mana = mana + 1
                 else:

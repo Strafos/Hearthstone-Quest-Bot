@@ -84,6 +84,9 @@ class BoardMinion(BaseBoardCard):
         self.exhausted = exhausted
         # self.card = card
     
+    def __str__(self):
+        return '{} {}/{} ex:{}'.format(self.name, self.attack, self.health, self.exhausted)
+
 
 class BoardWeapon(BaseBoardCard):
     def __init__(self, name, id, position, controller, attack, durability):
@@ -91,6 +94,9 @@ class BoardWeapon(BaseBoardCard):
         self.attack = attack
         self.durability = durability
         # self.card = card
+
+    def __str__(self):
+        return '{} {}/{}'.format(self.name, self.attack, self.durability)
 
 class BoardHero(BaseBoardCard):
     def __init__(self, name, id, position, controller, health, exhausted):
@@ -107,12 +113,14 @@ class Board:
     def __str__(self):
         enemy_hero_str = '{} {}hp\n'.format(self.enemy.name, self.enemy.health)
         enemy_board = []
-        for enemy_minion in self.enemy_minions:
+        sorted_enemies = sorted(self.enemy_minions, key=lambda minion: minion.position)
+        for enemy_minion in sorted_enemies:
             enemy_board.append('{} {}/{}'.format(enemy_minion.name, enemy_minion.attack, enemy_minion.health))
         enemy_board_str = ' || '.join(enemy_board) + '\n'
 
         ally_board = []
-        for ally_minion in self.ally_minions:
+        sorted_allies = sorted(self.ally_minions, key=lambda minion: minion.position)
+        for ally_minion in sorted_allies:
             ally_board.append('{} {}/{}'.format(ally_minion.name, ally_minion.attack, ally_minion.health))
         ally_board_str = ' || '.join(ally_board) + '\n'
         ally_hero_str = '{} {}hp'.format(self.ally.name, self.ally.health)

@@ -13,6 +13,7 @@ import entities
 from hearthstone_AI import HearthstoneAI
 import GameReader
 
+from tests.mid_game_mana import data
 from tests.coin_state import coins
 from tests.board_state_data import board_state
 from tests.endgame_data import endgame
@@ -162,9 +163,8 @@ def multi_taunt():
     game_reader = GameReader.GameReader("Linux", taunts)
     hand, turn, board, game_step, mana = game_reader.update_state()
     print(board)
-    for i in board.ally_minions:
-        print(i)
-        print(i.exhausted)
+    # for i in board.ally_minions:
+    #     print(i)
 
     chain = HearthstoneAI.smarter_smorc(board)
     print(chain)
@@ -193,4 +193,13 @@ def coin():
 
     print(mana)
 
-multi_taunt()
+def mid_gamemana():
+    game_reader = GameReader.GameReader("Linux", data)
+    hand, turn, board, game_step, mana = game_reader.update_state()
+    print(hand)
+
+    chain, val = HearthstoneAI.play_card(hand, mana)
+    print(chain)
+    print(val)
+
+mid_gamemana()

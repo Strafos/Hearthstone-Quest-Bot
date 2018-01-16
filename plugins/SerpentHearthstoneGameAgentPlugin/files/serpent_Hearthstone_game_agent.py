@@ -114,6 +114,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
         hand_card_locations = locations.hand_card_locations
         if card_pos == -2:
             self.hero_power(mouse)
+            return
 
         if card_pos == 0 or card_pos > handsize:
             return None
@@ -185,7 +186,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
         if board.enemy:
             curr_oppo = board.enemy.name
         if game_step == Step.BEGIN_MULLIGAN:
-            time.sleep(3)
+            time.sleep(6)
             mull = HearthstoneAI.get_mulligan(hand.hand)
             self.mull_card(mouse, hand, mull)
             while game_step == Step.BEGIN_MULLIGAN:
@@ -210,7 +211,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
             hp = 1
             while chain and turn and len(board.ally_minions) != 7 and not game_end and timeout < 11:
                 playstate = game_reader.friendly_player.tags.get(GameTag.PLAYSTATE, None)
-                print("Playstate: " + playstate)
+                print("Playstate: " + str(playstate))
                 self.play_card(mouse, hand.size, chain[0])
 
                 hp = chain[0] != -1
@@ -270,7 +271,13 @@ class SerpentHearthstoneGameAgent(GameAgent):
 
             self.end_turn(mouse)
         
-        playstate = game_reader.friendly_player.tags.get(GameTag.PLAYSTATE, None)
+        try:
+            playstate = game_reader.friendly_player.tags.get(GameTag.PLAYSTATE, None)
+        except:
+            time.sleep(3)
+            hand, turn, board, game_step, mana = game_reader.update_state()
+            playstate = game_reader.friendly_player.tags.get(GameTag.PLAYSTATE, None)
+
         if playstate == PlayState.WON or playstate == PlayState.LOST:
             if prev_oppo != curr_oppo:
                 if playstate == PlayState.WON:
