@@ -214,7 +214,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
                 print("Playstate: " + str(playstate))
                 self.play_card(mouse, hand.size, chain[0])
 
-                hp = chain[0] != -1
+                hp = chain[0] != -2
                 time.sleep(1)
 
                 t3 = time.time()

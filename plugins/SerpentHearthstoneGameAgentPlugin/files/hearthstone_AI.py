@@ -164,3 +164,10 @@ class HearthstoneAI:
         attackers.sort(key= lambda card: card.attack)
         chain, best = dfs(attackers, health, enemy.position, 0, [], -1000, [])
         return chain
+
+    def value_trade(board):
+        """
+        Value trades examples:
+        2/1 into a 6/2, both die but 2/1 worth less
+        4/5 into a 3/2
+        """
