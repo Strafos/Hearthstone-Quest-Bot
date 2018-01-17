@@ -15,11 +15,17 @@ class GameReader:
     def __init__(self, os, linux_log=board_state):
         self.os = os
         parser = LogParser()
+
         if self.os == "Windows":
             log_dir = r"C:\Program Files (x86)\Hearthstone\Logs\Power.log"
             with io.open(log_dir, "r", encoding='utf8') as logs:
                 lines = logs.readlines()
-                self.logs = ''.join(lines)
+                for line in lines:
+                    k += 1
+                    if "GameState.DebugPrintPower() - CREATE_GAME" in line:
+                        start = k
+                parsed_lines = lines[start-1:]
+                self.logs = ''.join(parsed_lines)
             parser.read(io.StringIO(self.logs))
         elif self.os == "Linux":
             parser.read(io.StringIO(linux_log))
