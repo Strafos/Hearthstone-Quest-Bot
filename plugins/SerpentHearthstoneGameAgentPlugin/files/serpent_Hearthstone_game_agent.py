@@ -282,6 +282,7 @@ class SerpentHearthstoneGameAgent(GameAgent):
         if playstate == PlayState.WON or playstate == PlayState.LOST:
             if prev_oppo != curr_oppo:
                 if playstate == PlayState.WON:
+                    time.sleep(3)
                     self.concede(mouse, game_reader)
                     wins += 1
                 elif playstate == PlayState.LOST:
