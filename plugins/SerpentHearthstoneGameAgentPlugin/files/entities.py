@@ -24,9 +24,10 @@ class HandMinion(BaseHandCard):
         return value
 
 class HandSpell(BaseHandCard):
-    def __init__(self, name, id, cost, position):
+    def __init__(self, name, id, cost, position, play_reqs):
         super().__init__(name, id, cost, position)
         self.value = 2*self.cost
+        self.play_reqs = play_reqs
         if name != "The Coin":
             self.value += .5
 

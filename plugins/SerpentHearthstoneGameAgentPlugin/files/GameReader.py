@@ -97,7 +97,8 @@ class GameReader:
                         card_info['name'], 
                         id, 
                         tags.get(GameTag.COST, 0), 
-                        tags.get(GameTag.ZONE_POSITION, 0))
+                        tags.get(GameTag.ZONE_POSITION, 0),
+                        card_info.get('playRequirements', None))
                     hand.add_card(spell)
                 elif card_type == "WEAPON":
                     weapon = entities.HandWeapon(
