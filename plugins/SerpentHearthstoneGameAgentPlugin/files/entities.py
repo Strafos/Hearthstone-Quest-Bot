@@ -43,7 +43,7 @@ class HeroPower():
         self.name = name
         self.cost = cost
         self.position = -2
-        self.value = 0
+        self.value = 0.1
         self.hero = hero
         if enemy_health <= 15:
             self.value = 1.2**(15 - enemy_health)
@@ -82,6 +82,7 @@ class BoardMinion(BaseBoardCard):
         self.health = health
         self.taunt = taunt
         self.exhausted = exhausted
+        self.value = attack + health
         # self.card = card
     
     def __str__(self):
