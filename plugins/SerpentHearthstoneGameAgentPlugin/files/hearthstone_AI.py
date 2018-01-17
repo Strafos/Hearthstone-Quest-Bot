@@ -27,6 +27,8 @@ class HearthstoneAI:
             if mana >= 0 and value > max_value:
                 chain = to_play[:]
                 max_value = value
+            if hand.size == 0:
+                return [], 0
             for i in range(idx, hand.size+1):
                 if hand.hand[i].name == "The Coin":
                     remaining_mana = mana + 1
@@ -171,3 +173,4 @@ class HearthstoneAI:
         2/1 into a 6/2, both die but 2/1 worth less
         4/5 into a 3/2
         """
+        pass

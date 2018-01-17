@@ -19,6 +19,7 @@ class GameReader:
         if self.os == "Windows":
             log_dir = r"C:\Program Files (x86)\Hearthstone\Logs\Power.log"
             with io.open(log_dir, "r", encoding='utf8') as logs:
+                k = 0
                 lines = logs.readlines()
                 for line in lines:
                     k += 1
