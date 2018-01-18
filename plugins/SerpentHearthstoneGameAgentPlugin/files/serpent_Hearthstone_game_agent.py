@@ -119,6 +119,9 @@ class SerpentHearthstoneGameAgent(GameAgent):
         if card_pos == 0 or card_pos > handsize:
             return None
 
+        if handsize > 10:
+            handsize = 10
+
         coords = hand_card_locations[handsize][card_pos]
         mouse.move(coords[0], coords[1], .3)
         mouse.click()
