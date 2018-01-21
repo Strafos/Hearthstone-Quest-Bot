@@ -13,7 +13,6 @@ import entities
 from hearthstone_AI import HearthstoneAI
 import GameReader
 
-t0 = time.time()
 from tests.mid_game_mana import data
 from tests.coin_state import coins
 from tests.board_state_data import board_state
@@ -23,8 +22,6 @@ from tests.multi_taunt_data import taunts
 from tests.weapon_face import weapon_face
 from tests.before import before
 from tests.after import after
-t1 = time.time()
-print("Import tests: " + str(t1-t0))
 
 def general_bot_test():
     AI = HearthstoneAI()
@@ -205,7 +202,12 @@ def mid_gamemana():
     print(chain)
     print(val)
 
-def log_separator():
-    pass
+def value_trade_test():
+    game_reader = GameReader.GameReader("Linux", board_state)
+    hand, turn, board, game_step, mana = game_reader.update_state()
+    print(board)
 
-log_separator
+    trades = HearthstoneAI.value_trade(board)
+    print(trades)
+
+value_trade_test()

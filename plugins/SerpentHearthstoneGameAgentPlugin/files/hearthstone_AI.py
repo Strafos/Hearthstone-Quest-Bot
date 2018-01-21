@@ -174,4 +174,27 @@ class HearthstoneAI:
         2/1 into a 6/2, both die but 2/1 worth less
         4/5 into a 3/2
         """
-        pass
+        # Identify ally attacking minions
+        attackers = []
+        for ally in board.ally_minions:
+            if ally.attack < 5 and not ally.exhausted:
+                attackers.append(ally)
+        
+        # Weapons always go face?
+        # if board.weapon and not board.ally.exhausted:
+        #     attackers.append(board.weapon)
+
+        # Identify all enemy minions
+        ememies = board.enemy_minions
+
+        # Determine if there are high value trades between minions
+        value_thresh = 5
+        trades = []
+        for ally in attackers:
+            for enemy in ememies:
+                v_enemy = enemy.health + enemy.attack
+                v_ally = ally.health + ally.attack
+                if ally.attack > enemy.health and v_enemy - v_ally > value_thresh:
+                    trades.append((ally.position, enemy.position))
+        
+        return trades
